@@ -31,7 +31,7 @@ class CoCreateFileSystem {
                     }
 
                 })
-                if (!organization || !organization.document[0])
+                if (!organization || !organization.document || !organization.document[0])
                     return res.send('Organization cannot be found using the domain: ' + hostname + ' in platformDB: ' + masterOrg);
 
                 organization_id = organization.document[0]._id
