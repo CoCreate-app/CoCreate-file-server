@@ -1,3 +1,10 @@
+## [1.0.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.1...v1.0.2) (2022-12-04)
+
+
+### Bug Fixes
+
+* console.log to trace error in deployment ([4f9c11f](https://github.com/CoCreate-app/CoCreate-file-server/commit/4f9c11f886ad113c008c2464e734d2172dc11ee2))
+
 ## [1.0.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.0...v1.0.1) (2022-12-04)
 
 
