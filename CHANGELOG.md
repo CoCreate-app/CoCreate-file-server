@@ -1,3 +1,10 @@
+## [1.0.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.4...v1.0.5) (2022-12-04)
+
+
+### Bug Fixes
+
+* crud return _id as object ([629dd6f](https://github.com/CoCreate-app/CoCreate-file-server/commit/629dd6f9aabf17ba2b41124df9b214768b07508c))
+
 ## [1.0.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.3...v1.0.4) (2022-12-04)
 
 
