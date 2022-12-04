@@ -33,7 +33,7 @@ class CoCreateFileSystem {
                 })
                 if (!organization || !organization.document[0])
                     return res.send('Organization cannot be found using the domain: ' + hostname + ' in platformDB: ' + masterOrg);
-                    
+
                 organization_id = organization.document[0]._id
             }
 
@@ -56,8 +56,8 @@ class CoCreateFileSystem {
                 collection: 'files',
                 filter: {
                     query: [
-                        {name: "domains", value: [hostname, '*'], operator: "$includes"},
-                        {name: "path", value: url, operator: "$includes"}
+                        {name: "domains", value: [hostname, '*'], operator: "$in"},
+                        {name: "path", value: url, operator: "$eq"}
                     ]
                 },
                 organization_id
