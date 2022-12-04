@@ -49,9 +49,8 @@ class CoCreateFileSystem {
                 }
             }
         
-            url = url.startsWith('/ws') ? url.substr(3) : url; // dev
+            url = url.startsWith('/ws') ? url.substring(3) : url; // dev
             
-            // fix: '*' causing error 'must be a single String of 12 bytes or a string of 24 hex characters'
             let file = await crud.readDocument({
                 collection: 'files',
                 filter: {
