@@ -61,7 +61,7 @@ class CoCreateFileSystem {
                 organization_id
             });
         
-            if (!file || !file.document[0])
+            if (!file || !file.document || !file.document[0])
                 return res.status(404).send(`${url} could not be found for ${organization_id} `);
             
             file = file.document[0]
