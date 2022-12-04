@@ -1,3 +1,10 @@
+## [1.0.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.5...v1.0.6) (2022-12-04)
+
+
+### Bug Fixes
+
+* path operator ([39bffb1](https://github.com/CoCreate-app/CoCreate-file-server/commit/39bffb1bad4e136335dfe051c23eaecd55f203a7))
+
 ## [1.0.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.4...v1.0.5) (2022-12-04)
 
 
