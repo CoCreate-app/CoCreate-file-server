@@ -33,9 +33,11 @@ class CoCreateFileSystem {
                 })
                 if (!organization || !organization.document[0])
                     return res.send('Organization cannot be found using the domain: ' + hostname + ' in platformDB: ' + masterOrg);
+                
+                console.log('file-server-----', organization.document[0], organization_id, organization_id.toString())
+
                 organization_id = organization.document[0]._id
             }
-            console.log('file-server-----', organization.document[0], organization_id, organization_id.toString())
             console.log('file-server-----', organization_id.toString())
 
             let [url, parameters] = req.url.split("?");
