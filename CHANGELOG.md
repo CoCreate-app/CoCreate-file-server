@@ -1,3 +1,10 @@
+## [1.0.7](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.6...v1.0.7) (2022-12-04)
+
+
+### Bug Fixes
+
+* replaced substr with substring ([aa015ae](https://github.com/CoCreate-app/CoCreate-file-server/commit/aa015ae7366ff8a26c6a9d54cbea004d994f03a9))
+
 ## [1.0.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.5...v1.0.6) (2022-12-04)
 
 
