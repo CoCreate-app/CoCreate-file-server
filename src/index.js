@@ -85,7 +85,8 @@ class CoCreateFileSystem {
             }
         
             if (!src) {
-                res.send('could not find src');
+                console.log('src not found')
+                // res.send('could not find src');
             }
         
             let contentType = file['content-type'] || mime.lookup(url) || 'text/html';
