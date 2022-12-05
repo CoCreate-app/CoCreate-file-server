@@ -99,6 +99,7 @@ class CoCreateFileSystem {
                     'Content-Type': contentType,
                     'Content-Length': file.length
                 });
+                console.log('before media', contentType)
                 res.send(file);
             } else if (contentType === 'text/html') {
                 try {
