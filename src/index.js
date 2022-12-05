@@ -68,7 +68,8 @@ class CoCreateFileSystem {
             file = file.document[0]
             if (!file['public'] ||  file['public'] === "false")
                 return res.status(404).send(`access not allowed`);
-        
+            
+            console.log('file found', url)
             let src;
             if (file['src'])
                 src = file['src'];
@@ -88,7 +89,8 @@ class CoCreateFileSystem {
             }
         
             let contentType = file['content-type'] || mime.lookup(url) || 'text/html';
-        
+            console.log('src',  contentType)
+
             if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
                 var base64Data = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                 let file = Buffer.from(base64Data, 'base64');
@@ -99,17 +101,17 @@ class CoCreateFileSystem {
                 res.send(file);
             } else if (contentType === 'text/html') {
                 try {
-                    console.log('html src',  src)
                     let html = await render.HTML(src, organization_id);
-                    console.log('returned html',  html)
                     if (html)
                         src = html
                 }
                 catch (err) {
                     console.warn('server-render: ' + err.message)
+                } finally {
+                    console.log('returned html')
+                    res.type(contentType);
+                    res.send(src)    
                 }
-                res.type(contentType);
-                res.send(src)
             } else {
                 res.type(contentType);
                 res.send(src);
