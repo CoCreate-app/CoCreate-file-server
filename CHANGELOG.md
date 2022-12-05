@@ -1,3 +1,10 @@
+## [1.0.14](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.13...v1.0.14) (2022-12-05)
+
+
+### Bug Fixes
+
+* typo res.end ([2299a83](https://github.com/CoCreate-app/CoCreate-file-server/commit/2299a83a7f54b14a6f034cfa54563f090acfc344))
+
 ## [1.0.13](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.12...v1.0.13) (2022-12-05)
 
 
