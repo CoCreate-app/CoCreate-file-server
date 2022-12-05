@@ -1,3 +1,10 @@
+## [1.0.13](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.12...v1.0.13) (2022-12-05)
+
+
+### Bug Fixes
+
+* removed server-side-render. render passed from init ([e6a1f74](https://github.com/CoCreate-app/CoCreate-file-server/commit/e6a1f745ce9800f2a3721e6e680aec6401d3df43))
+
 ## [1.0.12](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.11...v1.0.12) (2022-12-05)
 
 
