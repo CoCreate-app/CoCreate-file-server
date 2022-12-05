@@ -100,7 +100,7 @@ class CoCreateFileSystem {
             }
             else if (content_type === 'text/html') {
                 try {
-                    let fullHtml = await render.html(orgDB, src);
+                    let fullHtml = await render.HTML(src, organization_id);
                     res.type(content_type);
                     res.send(fullHtml);
                 }
