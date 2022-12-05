@@ -99,11 +99,12 @@ class CoCreateFileSystem {
                 let file = Buffer.from(base64Data, 'base64');
                 console.log('file', contentType, file)
 
-                res.writeHead(200, {
-                    'Content-Type': contentType,
-                    'Content-Length': file.length
-                });
+                // res.writeHead(200, {
+                //     'Content-Type': contentType,
+                //     'Content-Length': file.length
+                // });
                 console.log('after write', contentType)
+                res.type(contentType);
                 res.send(file);
             } else if (contentType === 'text/html') {
                 try {
