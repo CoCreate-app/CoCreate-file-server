@@ -1,3 +1,10 @@
+## [1.0.12](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.11...v1.0.12) (2022-12-05)
+
+
+### Bug Fixes
+
+* workflow automation ([f012165](https://github.com/CoCreate-app/CoCreate-file-server/commit/f012165d7f852756b21196b198d52d5a311d1141))
+
 ## [1.0.11](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.10...v1.0.11) (2022-12-05)
 
 
