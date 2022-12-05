@@ -1,3 +1,10 @@
+## [1.0.9](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.8...v1.0.9) (2022-12-05)
+
+
+### Bug Fixes
+
+* send html and organization_id to render.HTML ([a11390b](https://github.com/CoCreate-app/CoCreate-file-server/commit/a11390be2c40cdead9eaeab253c11477cafe21f7))
+
 ## [1.0.8](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.7...v1.0.8) (2022-12-04)
 
 
