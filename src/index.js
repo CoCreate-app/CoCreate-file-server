@@ -84,7 +84,7 @@ class CoCreateFileSystem {
             }
         
             if (!src) {
-                res.send('Document provided by routes could not be found and has no src ');
+                res.send('could not find src');
             }
         
             let content_type = file['content_type'] || mime.lookup(url) || 'text/html';
@@ -106,13 +106,13 @@ class CoCreateFileSystem {
                 }
                 catch (err) {
                     if (err.message.startsWith('infinite loop:')) {
-                        console.log('infinte loop ')
+                        console.log('infinte loop')
                         return res.send('there is a infinite loop');
         
                     }
                     else {
-                        console.warn('something is wrong with server-rendering: ' + err.message)
-                        return res.send(src + `<script>console.log("${'something is wrong with server-rendering: ' + err.message}")</script>`)
+                        console.warn('server-render: ' + err.message)
+                        return res.send(src + `<script>console.log("${'server-render: ' + err.message}")</script>`)
                     }
                 }
         
