@@ -93,31 +93,22 @@ class CoCreateFileSystem {
                 var base64Data = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                 let file = Buffer.from(base64Data, 'base64');
                 res.writeHead(200, {
-                'Content-Type': content_type,
-                'Content-Length': file.length
+                    'Content-Type': content_type,
+                    'Content-Length': file.length
                 });
-                res.end(file);
-            }
-            else if (content_type === 'text/html') {
+                res.send(file);
+            } else if (content_type === 'text/html') {
                 try {
-                    let fullHtml = await render.HTML(src, organization_id);
-                    res.type(content_type);
-                    res.send(fullHtml);
+                    let html = await render.HTML(src, organization_id);
+                    if (html)
+                        src = html
                 }
                 catch (err) {
-                    if (err.message.startsWith('infinite loop:')) {
-                        console.log('infinte loop')
-                        return res.send('there is a infinite loop');
-        
-                    }
-                    else {
-                        console.warn('server-render: ' + err.message)
-                        return res.send(src + `<script>console.log("${'server-render: ' + err.message}")</script>`)
-                    }
+                    console.warn('server-render: ' + err.message)
                 }
-        
-            }
-            else {
+                res.type(content_type);
+                res.send(src)
+            } else {
                 res.type(content_type);
                 res.send(src);
             }
