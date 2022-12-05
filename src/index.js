@@ -87,29 +87,31 @@ class CoCreateFileSystem {
                 res.send('could not find src');
             }
         
-            let content_type = file['content_type'] || mime.lookup(url) || 'text/html';
+            let contentType = file['content-type'] || mime.lookup(url) || 'text/html';
         
-            if (content_type.startsWith('image/') || content_type.startsWith('audio/') || content_type.startsWith('video/')) {
+            if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
                 var base64Data = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                 let file = Buffer.from(base64Data, 'base64');
                 res.writeHead(200, {
-                    'Content-Type': content_type,
+                    'Content-Type': contentType,
                     'Content-Length': file.length
                 });
                 res.send(file);
-            } else if (content_type === 'text/html') {
+            } else if (contentType === 'text/html') {
                 try {
+                    console.log('html src',  src)
                     let html = await render.HTML(src, organization_id);
+                    console.log('returned html',  html)
                     if (html)
                         src = html
                 }
                 catch (err) {
                     console.warn('server-render: ' + err.message)
                 }
-                res.type(content_type);
+                res.type(contentType);
                 res.send(src)
             } else {
-                res.type(content_type);
+                res.type(contentType);
                 res.send(src);
             }
         
