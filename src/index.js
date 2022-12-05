@@ -93,17 +93,15 @@ class CoCreateFileSystem {
             console.log('src',  contentType)
 
             if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
-                console.log('before media', contentType, src)
 
                 var base64Data = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                 let file = Buffer.from(base64Data, 'base64');
-                console.log('file', contentType, file)
 
                 // res.writeHead(200, {
                 //     'Content-Type': contentType,
                 //     'Content-Length': file.length
                 // });
-                console.log('after write', contentType)
+                console.log('after', contentType)
                 res.type(contentType);
                 res.send(file);
             } else if (contentType === 'text/html') {
