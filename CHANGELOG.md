@@ -1,3 +1,10 @@
+## [1.0.23](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.22...v1.0.23) (2022-12-06)
+
+
+### Bug Fixes
+
+* base64Data is not defined ([2a03c22](https://github.com/CoCreate-app/CoCreate-file-server/commit/2a03c22ed27c9e2c40471a032180017e0511d220))
+
 ## [1.0.22](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.21...v1.0.22) (2022-12-06)
 
 
