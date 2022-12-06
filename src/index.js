@@ -90,7 +90,7 @@ class CoCreateFileSystem {
 
             if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
                 src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-                src = Buffer.from(base64Data, 'base64');
+                src = Buffer.from(src, 'base64');
             } else if (contentType === 'text/html') {
                 try {
                     src = await render.HTML(src, organization_id);
