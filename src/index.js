@@ -63,13 +63,12 @@ class CoCreateFileSystem {
             });
         
             if (!file || !file.document || !file.document[0])
-                return res.status(404).send(`${url} could not be found for ${organization_id} `);
+                return res.status(404).send(`${url} could not be found for ${organization_id}`);
             
             file = file.document[0]
-            if (!file['public'] ||  file['public'] === "false")
+            if (!file['public'] || file['public'] === "false")
                 return res.status(404).send(`access not allowed`);
             
-            console.log('file found', url)
             let src;
             if (file['src'])
                 src = file['src'];
@@ -84,43 +83,23 @@ class CoCreateFileSystem {
                 src = fileSrc[file['name']];
             }
         
-            if (!src) {
-                console.log('src not found')
-                // res.send('could not find src');
-            }
+            if (!src)
+                return res.status(404).send(`src could not be found`);
         
             let contentType = file['content-type'] || mime.lookup(url) || 'text/html';
-            console.log('src',  contentType)
 
             if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
-
-                var base64Data = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
-                let file = Buffer.from(base64Data, 'base64');
-
-                // res.writeHead(200, {
-                //     'Content-Type': contentType,
-                //     'Content-Length': file.length
-                // });
-                console.log('after', contentType)
-                res.type(contentType);
-                res.send(file);
+                src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+                src = Buffer.from(base64Data, 'base64');
             } else if (contentType === 'text/html') {
                 try {
-                    let html = await render.HTML(src, organization_id);
-                    if (html)
-                        src = html
-                }
-                catch (err) {
+                    src = await render.HTML(src, organization_id);
+                } catch (err) {
                     console.warn('server-render: ' + err.message)
-                } finally {
-                    console.log('returned html')
-                    res.type(contentType);
-                    res.send(src)    
                 }
-            } else {
-                res.type(contentType);
-                res.send(src);
-            }
+            } 
+
+            return res.type(contentType).send(src);
         
         })
     
