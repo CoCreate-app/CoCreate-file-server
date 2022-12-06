@@ -1,3 +1,10 @@
+## [1.0.22](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.21...v1.0.22) (2022-12-06)
+
+
+### Bug Fixes
+
+* video response ([9059755](https://github.com/CoCreate-app/CoCreate-file-server/commit/905975589082d547b34c6f0a581174e7860c4b36))
+
 ## [1.0.21](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.20...v1.0.21) (2022-12-05)
 
 
