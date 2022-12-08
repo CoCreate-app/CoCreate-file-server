@@ -1,3 +1,10 @@
+## [1.0.25](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.24...v1.0.25) (2022-12-08)
+
+
+### Bug Fixes
+
+* bump dependencies ([162262c](https://github.com/CoCreate-app/CoCreate-file-server/commit/162262c4a8df2644a7b84b67b54756e99e852309))
+
 ## [1.0.24](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.23...v1.0.24) (2022-12-07)
 
 
