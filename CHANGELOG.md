@@ -1,3 +1,10 @@
+## [1.0.39](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.38...v1.0.39) (2022-12-30)
+
+
+### Bug Fixes
+
+* update config sources to use template  braces with entry on src ([f53564e](https://github.com/CoCreate-app/CoCreate-file-server/commit/f53564e52a8520cc8d528e9dc9897c0a3c292a56))
+
 ## [1.0.38](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.37...v1.0.38) (2022-12-29)
 
 
