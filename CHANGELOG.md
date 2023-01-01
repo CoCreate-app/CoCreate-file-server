@@ -1,3 +1,10 @@
+## [1.0.41](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.40...v1.0.41) (2023-01-01)
+
+
+### Bug Fixes
+
+* docs sanbox overflow ([769493e](https://github.com/CoCreate-app/CoCreate-file-server/commit/769493e08d87d50bbefc0eb8b3d38ffa0f515572))
+
 ## [1.0.40](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.39...v1.0.40) (2022-12-31)
 
 
