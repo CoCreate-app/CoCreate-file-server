@@ -28,8 +28,8 @@ class CoCreateFileSystem {
                         query: [
                             {name: "domains", value: [hostname], operator: "$in"}
                         ]
-                    }
-
+                    },
+                    organization_id: process.env.organization_id
                 })
                 if (!organization || !organization.document || !organization.document[0])
                     return res.send('Organization cannot be found using the domain: ' + hostname + ' in platformDB: ' + process.env.organization_id);
