@@ -1,3 +1,12 @@
+## [1.0.53](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.52...v1.0.53) (2023-04-11)
+
+
+### Bug Fixes
+
+* domains renamd to hosts ([8d19734](https://github.com/CoCreate-app/CoCreate-file-server/commit/8d197343a5daa9039f00f69e4a0a78e8a9925f59))
+* if !organization_id query platform org by domain to find id ([c849c7d](https://github.com/CoCreate-app/CoCreate-file-server/commit/c849c7dc2e4c7533550389a589f650077fd9da96))
+* renamed domans to hosts ([57c06c3](https://github.com/CoCreate-app/CoCreate-file-server/commit/57c06c32a5b38c1006ad1e85648164ce3568ac63))
+
 ## [1.0.52](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.51...v1.0.52) (2023-02-01)
 
 
