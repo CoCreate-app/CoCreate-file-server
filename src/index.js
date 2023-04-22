@@ -4,23 +4,32 @@
  *
  * SPDX-License-Identifier: MIT
  ********************************************************************************/
- const express = require('express');
- const router = express.Router();
- const mime = require('mime-types');
- const dns = require('dns');
- 
+const express = require('express');
+const router = express.Router();
+const mime = require('mime-types');
+const organizations = new Map();
+
 class CoCreateFileSystem {
     constructor(crud, render) {
         this.router = router.get('/*', async(req, res) => {
-            let organization_id;
             let hostname = req.hostname;
+
+            let organization_id = organizations.get(hostname);
+            console.log(req.protocol, req.secure)
+            // let ddns = await certManager.checkDns(hostname)
+            // let hasCert = await certManager.checkCert(hostname)
+            // console.log(hostname, 'crt==', hasCert)
+            // ToDo: check if secured domain by running command 
+            // sudo certbot certificates using spawn
+            // console.dir(req.headers.host)
             // dns.resolve(hostname, 'TXT', (err, records) => {
             //     if (records)
             //         organization_id = records[0][0];
             //     if (err)
             //         console.log(hostname, err);
             // });
-        
+               
+    
             if (!organization_id) {
                 let organization = await crud.readDocument({ 
                     collection: 'organizations',
@@ -32,9 +41,10 @@ class CoCreateFileSystem {
                     organization_id: process.env.organization_id
                 })
                 if (!organization || !organization.document || !organization.document[0])
-                    return res.send('Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id);
+                    return res.send('Organization cannot be found using the host---: ' + hostname + ' in platformDB: ' + process.env.organization_id);
 
                 organization_id = organization.document[0]._id
+                organizations.set(hostname, organization_id)
             }
 
             let [url, parameters] = req.url.split("?");
