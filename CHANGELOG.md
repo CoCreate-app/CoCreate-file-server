@@ -1,3 +1,10 @@
+# [1.1.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.53...v1.1.0) (2023-04-23)
+
+
+### Features
+
+* store organizaton_id in map to prevent repeated db queries ([74c0540](https://github.com/CoCreate-app/CoCreate-file-server/commit/74c05407df2118a9b1601181a7a42c1ac7bdad32))
+
 ## [1.0.53](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.52...v1.0.53) (2023-04-11)
 
 
