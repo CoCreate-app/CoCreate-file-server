@@ -15,7 +15,7 @@ class CoCreateFileSystem {
             let hostname = req.hostname;
 
             let organization_id = organizations.get(hostname);
-            console.log(req.protocol, req.secure)
+            // console.log(req.protocol, req.secure)
             // let ddns = await certManager.checkDns(hostname)
             // let hasCert = await certManager.checkCert(hostname)
             // console.log(hostname, 'crt==', hasCert)
