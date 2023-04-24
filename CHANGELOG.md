@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.1...v1.1.2) (2023-04-24)
+
+
+### Bug Fixes
+
+* removed uglify.js from dev dependencies ([d6ba699](https://github.com/CoCreate-app/CoCreate-file-server/commit/d6ba699dd24590ea429b97ac4e5a461218bb3dc1))
+
 ## [1.1.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.0...v1.1.1) (2023-04-24)
 
 
