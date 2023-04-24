@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.0...v1.1.1) (2023-04-24)
+
+
+### Bug Fixes
+
+* removed console.log ([94904b7](https://github.com/CoCreate-app/CoCreate-file-server/commit/94904b70b9741eba1a29172dc3dca1f2f6d3edf3))
+
 # [1.1.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.0.53...v1.1.0) (2023-04-23)
 
 
