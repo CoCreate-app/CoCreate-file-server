@@ -11,7 +11,6 @@ const organizations = new Map();
 
 class CoCreateFileSystem {
     constructor(crud, render) {
-        let default404, default403
         
         async function defaultFiles(fileName) {
             let file = await crud.readDocument({ 
@@ -25,12 +24,19 @@ class CoCreateFileSystem {
             })
             if (!file || !file.document || !file.document[0])
                 return ''
-            return file.document[0]
+            return file.document[0].src
         }
 
-        // const default404 = defaultFiles('/404.html')
-        // const default403 = defaultFiles('/403.html')
-        console.log('defualtfiles', default404, default403)
+        let default403, default404, hostNotFound
+        defaultFiles('/403.html').then((file) => {
+            default403 = file
+        })
+        defaultFiles('/404.html').then((file) => {
+            default404 = file
+        })
+        defaultFiles('/hostNotFound.html').then((file) => {
+            hostNotFound = file
+        })
 
         this.router = router.get('/*', async(req, res) => {
             let hostname = req.hostname;
@@ -47,8 +53,7 @@ class CoCreateFileSystem {
                 })
 
                 if (!organization || !organization.document || !organization.document[0]) {
-                    // ToDo: get response from platform.db.file.hostNotFound
-                    let hostNotFound = 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id 
+                    hostNotFound = hostNotFound || 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id 
                     return res.send(hostNotFound);
                 }
 
@@ -90,7 +95,9 @@ class CoCreateFileSystem {
 
                 let pageNotFound = await crud.readDocument(data); 
                 if (!pageNotFound || !pageNotFound.document || !pageNotFound.document[0])
-                    pageNotFound = `${url} could not be found for ${organization_id}` 
+                    pageNotFound = default404 || `${url} could not be found for ${organization_id}`
+                else 
+                    pageNotFound = pageNotFound.document[0].src
                 return res.status(404).send(pageNotFound);
             }
 
@@ -102,7 +109,10 @@ class CoCreateFileSystem {
 
                 let pageForbidden = await crud.readDocument(data); 
                 if (!pageForbidden || !pageForbidden.document || !pageForbidden.document[0])
-                    pageForbidden = `${url} access not allowed for ${organization_id}`
+                    pageForbidden = default403 || `${url} access not allowed for ${organization_id}`
+                else 
+                    pageForbidden = pageForbidden.document[0].src
+
                 return res.status(403).send(pageForbidden);
             }
             
