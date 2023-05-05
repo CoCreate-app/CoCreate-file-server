@@ -1,3 +1,11 @@
+# [1.2.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.3...v1.2.0) (2023-05-05)
+
+
+### Features
+
+* /superadmin to aacess a default admin console ([04a6f15](https://github.com/CoCreate-app/CoCreate-file-server/commit/04a6f15ce0fe441d1aedda20b74d66f5d63abef0))
+* 404.html and 403.html fetched from orgs files, with default fallbacks handeled by platform ([c69faab](https://github.com/CoCreate-app/CoCreate-file-server/commit/c69faab0af96752ca6f6e4b0a2faa3c0584f6f92))
+
 ## [1.1.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.2...v1.1.3) (2023-04-24)
 
 
