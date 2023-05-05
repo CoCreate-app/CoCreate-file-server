@@ -11,25 +11,30 @@ const organizations = new Map();
 
 class CoCreateFileSystem {
     constructor(crud, render) {
+        let default404, default403
+        
+        async function defaultFiles(fileName) {
+            let file = await crud.readDocument({ 
+                collection: 'files',
+                filter: {
+                    query: [
+                        {name: "path", value: fileName, operator: "$eq"}
+                    ]
+                },
+                organization_id: process.env.organization_id
+            })
+            if (!file || !file.document || !file.document[0])
+                return ''
+            return file.document[0]
+        }
+
+        // const default404 = defaultFiles('/404.html')
+        // const default403 = defaultFiles('/403.html')
+        console.log('defualtfiles', default404, default403)
+
         this.router = router.get('/*', async(req, res) => {
             let hostname = req.hostname;
-
             let organization_id = organizations.get(hostname);
-            // console.log(req.protocol, req.secure)
-            // let ddns = await certManager.checkDns(hostname)
-            // let hasCert = await certManager.checkCert(hostname)
-            // console.log(hostname, 'crt==', hasCert)
-            // ToDo: check if secured domain by running command 
-            // sudo certbot certificates using spawn
-            // console.dir(req.headers.host)
-            // dns.resolve(hostname, 'TXT', (err, records) => {
-            //     if (records)
-            //         organization_id = records[0][0];
-            //     if (err)
-            //         console.log(hostname, err);
-            // });
-               
-    
             if (!organization_id) {
                 let organization = await crud.readDocument({ 
                     collection: 'organizations',
@@ -40,8 +45,12 @@ class CoCreateFileSystem {
                     },
                     organization_id: process.env.organization_id
                 })
-                if (!organization || !organization.document || !organization.document[0])
-                    return res.send('Organization cannot be found using the host---: ' + hostname + ' in platformDB: ' + process.env.organization_id);
+
+                if (!organization || !organization.document || !organization.document[0]) {
+                    // ToDo: get response from platform.db.file.hostNotFound
+                    let hostNotFound = 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id 
+                    return res.send(hostNotFound);
+                }
 
                 organization_id = organization.document[0]._id
                 organizations.set(hostname, organization_id)
@@ -51,17 +60,14 @@ class CoCreateFileSystem {
             if (parameters){}
             if (url.endsWith('/')) {
                 url += "index.html";
-            }
-            else {
+            } else {
                 let directory = url.split("/").slice(-1)[0];
                 if (!directory.includes('.')){
                     url += "/index.html";
                 }
             }
-        
-            url = url.startsWith('/ws') ? url.substring(3) : url; // dev
-            
-            let file = await crud.readDocument({
+                    
+            let data = {
                 collection: 'files',
                 filter: {
                     query: [
@@ -70,14 +76,35 @@ class CoCreateFileSystem {
                     ]
                 },
                 organization_id
-            });
+            }
+
+            if (url.startsWith('/superadmin')) 
+                data.organization_id = process.env.organization_id
+
+            let file = await crud.readDocument(data);
         
-            if (!file || !file.document || !file.document[0])
-                return res.status(404).send(`${url} could not be found for ${organization_id}`);
-            
+            if (!file || !file.document || !file.document[0]) {
+                data.filter.query[1].value = '/404.html'
+                if (data.organization_id !== organization_id)
+                    data.organization_id = organization_id
+
+                let pageNotFound = await crud.readDocument(data); 
+                if (!pageNotFound || !pageNotFound.document || !pageNotFound.document[0])
+                    pageNotFound = `${url} could not be found for ${organization_id}` 
+                return res.status(404).send(pageNotFound);
+            }
+
             file = file.document[0]
-            if (!file['public'] || file['public'] === "false")
-                return res.status(404).send(`access not allowed`);
+            if (!file['public'] || file['public'] === "false") {
+                data.filter.query[1].value = '/403.html'
+                if (data.organization_id !== organization_id)
+                    data.organization_id = organization_id
+
+                let pageForbidden = await crud.readDocument(data); 
+                if (!pageForbidden || !pageForbidden.document || !pageForbidden.document[0])
+                    pageForbidden = `${url} access not allowed for ${organization_id}`
+                return res.status(403).send(pageForbidden);
+            }
             
             let src;
             if (file['src'])
@@ -93,8 +120,16 @@ class CoCreateFileSystem {
                 src = fileSrc[file['name']];
             }
         
-            if (!src)
-                return res.status(404).send(`src could not be found`);
+            if (!src) {
+                data.filter.query[1].value = '/404.html'
+                if (data.organization_id !== organization_id)
+                    data.organization_id = organization_id
+
+                let pageNotFound = await crud.readDocument(data); 
+                if (!pageNotFound || !pageNotFound.document || !pageNotFound.document[0])
+                    pageNotFound = `${url} could not be found for ${organization_id}` 
+                return res.status(404).send(pageNotFound);
+            }
         
             let contentType = file['content-type'] || mime.lookup(url) || 'text/html';
 
@@ -108,6 +143,11 @@ class CoCreateFileSystem {
                     console.warn('server-render: ' + err.message)
                 }
             } 
+            if (url.startsWith('/superadmin')) {
+                let apikey = "e968b3a6-435e-4d79-a251-b41d7d08"
+                src = src.replace('5ff747727005da1c272740ab', organization_id).replace('2061acef-0451-4545-f754-60cf8160', apikey)
+                console.log('getapikey superadmin')
+            }
 
             return res.type(contentType).send(src);
         
