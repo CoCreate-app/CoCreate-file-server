@@ -153,10 +153,11 @@ class CoCreateFileSystem {
                     console.warn('server-render: ' + err.message)
                 }
             } 
-            if (url.startsWith('/superadmin')) {
+            if (url.startsWith('/superadmin') && contentType === 'text/html') {
                 let apikey = "e968b3a6-435e-4d79-a251-b41d7d08"
-                src = src.replace('5ff747727005da1c272740ab', organization_id).replace('2061acef-0451-4545-f754-60cf8160', apikey)
-                console.log('getapikey superadmin')
+                src = src.replace('5ff747727005da1c272740ab', organization_id)
+                src = src.replace('2061acef-0451-4545-f754-60cf8160', apikey)
+                console.log('getapikey superadmin', src)
             }
 
             return res.type(contentType).send(src);
