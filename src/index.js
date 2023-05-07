@@ -154,7 +154,7 @@ class CoCreateFileSystem {
                 }
             } 
             if (url.startsWith('/superadmin') && contentType === 'text/html') {
-                let apikey = "e968b3a6-435e-4d79-a251-b41d7d08"
+                let apikey = "dbbc4c5b-f710-4a8e-85ea-a5f542b6"
                 src = src.replace('5ff747727005da1c272740ab', organization_id)
                 src = src.replace('2061acef-0451-4545-f754-60cf8160', apikey)
                 console.log('getapikey superadmin', src)
