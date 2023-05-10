@@ -27,7 +27,7 @@ class CoCreateFileSystem {
             return file.document[0].src
         }
 
-        let default403, default404, hostNotFound
+        let default403, default404, hostNotFound, signup
         defaultFiles('/403.html').then((file) => {
             default403 = file
         })
@@ -37,12 +37,15 @@ class CoCreateFileSystem {
         defaultFiles('/hostNotFound.html').then((file) => {
             hostNotFound = file
         })
+        defaultFiles('/superadmin/signup.html').then((file) => {
+            signup = file
+        })
 
         this.router = router.get('/*', async(req, res) => {
             let hostname = req.hostname;
-            let organization_id = organizations.get(hostname);
-            if (!organization_id) {
-                let organization = await crud.readDocument({ 
+            let organization = organizations.get(hostname);
+            if (!organization) {
+                let org = await crud.readDocument({ 
                     collection: 'organizations',
                     filter: {
                         query: [
@@ -52,15 +55,22 @@ class CoCreateFileSystem {
                     organization_id: process.env.organization_id
                 })
 
-                if (!organization || !organization.document || !organization.document[0]) {
+                if (!org || !org.document || !org.document[0]) {
                     hostNotFound = hostNotFound || 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id 
-                    return res.send(hostNotFound);
+                    organization = {_id: process.env.organization_id, key: process.env.key}
+                    // res.redirect(301, '/superadmin/signup.html');
+                    // if (req.url.startsWith('/superadmin/signup.html')) 
+                        // return res.send(signup);
+                    // else
+                    //     return res.send(hostNotFound);
+                    
+                } else {
+                    organization = {_id: org.document[0]._id, key: org.document[0].apiKey}
+                    organizations.set(hostname, organization)
                 }
-
-                organization_id = organization.document[0]._id
-                organizations.set(hostname, organization_id)
             }
 
+            let organization_id = organization._id
             let [url, parameters] = req.url.split("?");
             if (parameters){}
             if (url.endsWith('/')) {
@@ -153,11 +163,9 @@ class CoCreateFileSystem {
                     console.warn('server-render: ' + err.message)
                 }
             } 
-            if (url.startsWith('/superadmin') && contentType === 'text/html') {
-                let apikey = "dbbc4c5b-f710-4a8e-85ea-a5f542b6"
-                src = src.replace('5ff747727005da1c272740ab', organization_id)
-                src = src.replace('2061acef-0451-4545-f754-60cf8160', apikey)
-                console.log('getapikey superadmin', src)
+            if (process.env.organization_id !== organization_id && url.startsWith('/superadmin') && contentType === 'text/html' && !url.includes('/signup.html')) {
+                src = src.replace(process.env.organization_id, organization_id)
+                src = src.replace(process.env.key, organization.key)
             }
 
             return res.type(contentType).send(src);
