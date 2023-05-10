@@ -65,7 +65,7 @@ class CoCreateFileSystem {
                     //     return res.send(hostNotFound);
                     
                 } else {
-                    organization = {_id: org.document[0]._id, key: org.document[0].apiKey}
+                    organization = {_id: org.document[0]._id, key: org.document[0].key}
                     organizations.set(hostname, organization)
                 }
             }
