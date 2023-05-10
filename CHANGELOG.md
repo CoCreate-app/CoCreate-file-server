@@ -1,3 +1,10 @@
+## [1.2.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.2.0...v1.2.1) (2023-05-10)
+
+
+### Bug Fixes
+
+* handeling of superadmin signup ([06a5b96](https://github.com/CoCreate-app/CoCreate-file-server/commit/06a5b963bd8f552d02baa3ac9f749071a8387653))
+
 # [1.2.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.1.3...v1.2.0) (2023-05-05)
 
 
