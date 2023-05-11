@@ -1,3 +1,16 @@
+# [1.3.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.2.1...v1.3.0) (2023-05-11)
+
+
+### Bug Fixes
+
+* apikey renamed to key ([3cd1648](https://github.com/CoCreate-app/CoCreate-file-server/commit/3cd16488b21b0110ec242b1c02dffe02328153c9))
+* replace key ([fa78c05](https://github.com/CoCreate-app/CoCreate-file-server/commit/fa78c0557c380e149336b4eefbe8e797b86b3409))
+
+
+### Features
+
+* redirect to /superadmin ([9094337](https://github.com/CoCreate-app/CoCreate-file-server/commit/909433742d08dadb1bc9f61b45850dd6eec8e1c2))
+
 ## [1.2.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.2.0...v1.2.1) (2023-05-10)
 
 
