@@ -58,12 +58,8 @@ class CoCreateFileSystem {
                 if (!org || !org.document || !org.document[0]) {
                     hostNotFound = hostNotFound || 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id 
                     organization = {_id: process.env.organization_id, key: process.env.key}
-                    // res.redirect(301, '/superadmin/signup.html');
-                    // if (req.url.startsWith('/superadmin/signup.html')) 
-                        // return res.send(signup);
-                    // else
-                    //     return res.send(hostNotFound);
-                    
+                    if (!req.url.startsWith('/superadmin')) 
+                        return res.redirect(301, 'https://' + hostname + '/superadmin/signup.html')                    
                 } else {
                     organization = {_id: org.document[0]._id, key: org.document[0].key}
                     organizations.set(hostname, organization)
