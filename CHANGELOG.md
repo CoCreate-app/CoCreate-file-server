@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.3.0...v1.4.0) (2023-05-19)
+
+
+### Features
+
+* add organization_id to response headers ([2f731f5](https://github.com/CoCreate-app/CoCreate-file-server/commit/2f731f582f535d93b223bfaad98a52675953e11e))
+
 # [1.3.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.2.1...v1.3.0) (2023-05-11)
 
 
