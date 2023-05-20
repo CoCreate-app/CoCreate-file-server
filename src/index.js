@@ -56,7 +56,7 @@ class CoCreateFileSystem {
                 })
 
                 if (!org || !org.document || !org.document[0]) {
-                    hostNotFound = hostNotFound || 'Organization cannot be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
+                    hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
                     return res.end(hostNotFound);
                 } else {
                     organization = { _id: org.document[0]._id }
