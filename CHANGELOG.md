@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.0...v1.4.1) (2023-05-20)
+
+
+### Bug Fixes
+
+* hostNotFound response ([c97ea45](https://github.com/CoCreate-app/CoCreate-file-server/commit/c97ea4511e1275aacbe71bb08d4f4efed2b290a4))
+
 # [1.4.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.3.0...v1.4.0) (2023-05-19)
 
 
