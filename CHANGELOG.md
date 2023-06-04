@@ -1,3 +1,11 @@
+## [1.4.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.3...v1.4.4) (2023-06-04)
+
+
+### Bug Fixes
+
+* [@v3](https://github.com/v3) ([9fef0e7](https://github.com/CoCreate-app/CoCreate-file-server/commit/9fef0e7e7da1a7b9ff36dd55e80ffc63059f721a))
+* html formating ([afd6387](https://github.com/CoCreate-app/CoCreate-file-server/commit/afd63878310a266ce4d921541516803be1007ace))
+
 ## [1.4.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.2...v1.4.3) (2023-05-25)
 
 
