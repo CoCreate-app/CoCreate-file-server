@@ -1,3 +1,10 @@
+## [1.4.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.5...v1.4.6) (2023-06-04)
+
+
+### Bug Fixes
+
+* Refactor CoCreate.config.js to remove hard-coded credentials ([d580478](https://github.com/CoCreate-app/CoCreate-file-server/commit/d58047895652d997957e00cc39233807d1e5e27a))
+
 ## [1.4.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.4...v1.4.5) (2023-06-04)
 
 
