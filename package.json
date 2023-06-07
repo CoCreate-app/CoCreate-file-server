@@ -45,6 +45,9 @@
     "url": "https://github.com/sponsors/CoCreate-app"
   },
   "main": "./src/index.js",
+  "devDependencies": {
+    "@cocreate/cli": "^1.29.3"
+  },
   "dependencies": {
     "@cocreate/docs": "^1.8.2",
     "express": "^4.18.2"
