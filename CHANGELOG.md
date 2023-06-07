@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.6...v1.5.0) (2023-06-07)
+
+
+### Features
+
+* replaced express with http module. Refactor server code with better organization and readable code ([a723ba3](https://github.com/CoCreate-app/CoCreate-file-server/commit/a723ba327e39f5d3ab9e5afc8815440389d06853))
+
 ## [1.4.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.5...v1.4.6) (2023-06-04)
 
 
