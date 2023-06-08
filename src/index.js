@@ -68,6 +68,9 @@ class CoCreateFileSystem {
 
                 let organization_id = organization._id
                 res.setHeader('organization', organization_id)
+                res.setHeader('Access-Control-Allow-Origin', '*');
+                res.setHeader('Access-Control-Allow-Methods', '');
+                res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
                 let pathname = valideUrl.pathname;
                 let parameters = valideUrl.searchParams;
