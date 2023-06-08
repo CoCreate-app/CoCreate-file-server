@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.5.0...v1.6.0) (2023-06-08)
+
+
+### Features
+
+* Add CORS headers to response ([a83938c](https://github.com/CoCreate-app/CoCreate-file-server/commit/a83938c8195d2937371133ded682bdb0f31411b1))
+
 # [1.5.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.4.6...v1.5.0) (2023-06-07)
 
 
