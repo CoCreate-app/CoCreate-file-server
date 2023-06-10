@@ -50,7 +50,7 @@ class CoCreateFileSystem {
                         collection: 'organizations',
                         filter: {
                             query: [
-                                { name: "hosts", value: [hostname], operator: "$in" }
+                                { name: "host", value: [hostname], operator: "$in" }
                             ]
                         },
                         organization_id: process.env.organization_id
@@ -90,7 +90,7 @@ class CoCreateFileSystem {
                     collection: 'files',
                     filter: {
                         query: [
-                            { name: "hosts", value: [hostname, '*'], operator: "$in" },
+                            { name: "host", value: [hostname, '*'], operator: "$in" },
                             { name: "path", value: pathname, operator: "$eq" }
                         ]
                     },
