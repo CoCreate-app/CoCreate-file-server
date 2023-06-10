@@ -27,7 +27,6 @@
     "start": "npx webpack --config webpack.config.js",
     "build": "NODE_ENV=production npx webpack --config webpack.config.js",
     "dev": "npx webpack --config webpack.config.js --watch",
-    "docs": "node ./node_modules/@cocreate/docs/src/index.js",
     "postinstall": "node ./node_modules/@cocreate/cli/check-coc.js"
   },
   "repository": {
@@ -47,9 +46,5 @@
   "main": "./src/index.js",
   "devDependencies": {
     "@cocreate/cli": "^1.29.3"
-  },
-  "dependencies": {
-    "@cocreate/docs": "^1.8.13",
-    "express": "^4.18.2"
   }
 }
