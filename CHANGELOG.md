@@ -1,3 +1,10 @@
+## [1.6.10](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.9...v1.6.10) (2023-06-11)
+
+
+### Bug Fixes
+
+* testing workflow ([668e6af](https://github.com/CoCreate-app/CoCreate-file-server/commit/668e6afc5b7c26c553778dde8a67e43e5a33a9ed))
+
 ## [1.6.9](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.8...v1.6.9) (2023-06-11)
 
 

@@ -1,6 +1,6 @@
 {
   "name": "@cocreate/file-server",
-  "version": "1.6.9",
+  "version": "1.6.10",
   "description": "A simple file-server component in vanilla javascript. Easily configured using HTML5 data-attributes and/or JavaScript API.",
   "keywords": [
     "file-server",
