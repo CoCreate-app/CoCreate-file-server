@@ -45,6 +45,6 @@
   },
   "main": "./src/index.js",
   "devDependencies": {
-    "@cocreate/cli": "^1.29.3"
+    "@cocreate/cli": "^1.33.0"
   }
 }
