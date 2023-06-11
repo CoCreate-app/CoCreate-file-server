@@ -1,3 +1,10 @@
+## [1.6.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.2...v1.6.3) (2023-06-11)
+
+
+### Bug Fixes
+
+* renamed hosts to host. the value can be a string or an array of strings ([04ff9f0](https://github.com/CoCreate-app/CoCreate-file-server/commit/04ff9f0d085348a9c1ebbc1566ae6705a414cf34))
+
 ## [1.6.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.1...v1.6.2) (2023-06-10)
 
 
