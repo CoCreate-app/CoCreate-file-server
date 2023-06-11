@@ -1,3 +1,10 @@
+## [1.6.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.5...v1.6.6) (2023-06-11)
+
+
+### Bug Fixes
+
+* postintall error ([65e20ec](https://github.com/CoCreate-app/CoCreate-file-server/commit/65e20ecd093bc3f16fc4be7be57bd75334e7d391))
+
 ## [1.6.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.4...v1.6.5) (2023-06-11)
 
 
