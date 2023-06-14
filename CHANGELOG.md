@@ -1,3 +1,10 @@
+## [1.6.14](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.13...v1.6.14) (2023-06-14)
+
+
+### Bug Fixes
+
+* Update dependencies versions for [@cocreate](https://github.com/cocreate) libraries ([c5b4ee6](https://github.com/CoCreate-app/CoCreate-file-server/commit/c5b4ee6013e6569e092d59c58d5b8a01f8654a12))
+
 ## [1.6.13](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.12...v1.6.13) (2023-06-11)
 
 
