@@ -11,8 +11,9 @@ const organizations = new Map();
 class CoCreateFileSystem {
     constructor(server, crud, render) {
         async function defaultFiles(fileName) {
-            let file = await crud.readDocument({
-                collection: 'files',
+            let file = await crud.send({
+                method: 'read.object',
+                array: 'files',
                 filter: {
                     query: [
                         { name: "path", value: fileName, operator: "$eq" }
@@ -20,9 +21,9 @@ class CoCreateFileSystem {
                 },
                 organization_id: process.env.organization_id
             })
-            if (!file || !file.document || !file.document[0])
+            if (!file || !file.object || !file.object[0])
                 return ''
-            return file.document[0].src
+            return file.object[0].src
         }
 
         let default403, default404, hostNotFound, signup
@@ -46,8 +47,9 @@ class CoCreateFileSystem {
 
                 let organization = organizations.get(hostname);
                 if (!organization) {
-                    let org = await crud.readDocument({
-                        collection: 'organizations',
+                    let org = await crud.send({
+                        method: 'read.object',
+                        array: 'organizations',
                         filter: {
                             query: [
                                 { name: "host", value: [hostname], operator: "$in" }
@@ -56,12 +58,12 @@ class CoCreateFileSystem {
                         organization_id: process.env.organization_id
                     })
 
-                    if (!org || !org.document || !org.document[0]) {
+                    if (!org || !org.object || !org.object[0]) {
                         hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
                         res.writeHead(404, { 'Content-Type': 'text/plain' });
                         return res.end(hostNotFound);
                     } else {
-                        organization = { _id: org.document[0]._id }
+                        organization = { _id: org.object[0]._id }
                         organizations.set(hostname, organization)
                     }
                 }
@@ -87,7 +89,8 @@ class CoCreateFileSystem {
                 }
 
                 let data = {
-                    collection: 'files',
+                    method: 'read.object',
+                    array: 'files',
                     filter: {
                         query: [
                             { name: "host", value: [hostname, '*'], operator: "$in" },
@@ -100,33 +103,33 @@ class CoCreateFileSystem {
                 if (pathname.startsWith('/superadmin'))
                     data.organization_id = process.env.organization_id
 
-                let file = await crud.readDocument(data);
+                let file = await crud.send(data);
 
-                if (!file || !file.document || !file.document[0]) {
+                if (!file || !file.object || !file.object[0]) {
                     data.filter.query[1].value = '/404.html'
                     if (data.organization_id !== organization_id)
                         data.organization_id = organization_id
 
-                    let pageNotFound = await crud.readDocument(data);
-                    if (!pageNotFound || !pageNotFound.document || !pageNotFound.document[0])
+                    let pageNotFound = await crud.send(data);
+                    if (!pageNotFound || !pageNotFound.object || !pageNotFound.object[0])
                         pageNotFound = default404 || `${pathname} could not be found for ${organization_id}`
                     else
-                        pageNotFound = pageNotFound.document[0].src
+                        pageNotFound = pageNotFound.object[0].src
                     res.writeHead(404, { 'Content-Type': 'text/plain' });
                     return res.end(pageNotFound);
                 }
 
-                file = file.document[0]
+                file = file.object[0]
                 if (!file['public'] || file['public'] === "false") {
                     data.filter.query[1].value = '/403.html'
                     if (data.organization_id !== organization_id)
                         data.organization_id = organization_id
 
-                    let pageForbidden = await crud.readDocument(data);
-                    if (!pageForbidden || !pageForbidden.document || !pageForbidden.document[0])
+                    let pageForbidden = await crud.send(data);
+                    if (!pageForbidden || !pageForbidden.object || !pageForbidden.object[0])
                         pageForbidden = default403 || `${pathname} access not allowed for ${organization_id}`
                     else
-                        pageForbidden = pageForbidden.document[0].src
+                        pageForbidden = pageForbidden.object[0].src
                     res.writeHead(403, { 'Content-Type': 'text/plain' });
                     return res.end(pageForbidden);
                 }
@@ -135,9 +138,10 @@ class CoCreateFileSystem {
                 if (file['src'])
                     src = file['src'];
                 else {
-                    let fileSrc = await crud.readDocument({
-                        collection: file['collection'],
-                        document: {
+                    let fileSrc = await crud.send({
+                        method: 'read.object',
+                        array: file['array'],
+                        object: {
                             _id: file._id
                         },
                         organization_id
@@ -150,8 +154,8 @@ class CoCreateFileSystem {
                     if (data.organization_id !== organization_id)
                         data.organization_id = organization_id
 
-                    let pageNotFound = await crud.readDocument(data);
-                    if (!pageNotFound || !pageNotFound.document || !pageNotFound.document[0])
+                    let pageNotFound = await crud.send(data);
+                    if (!pageNotFound || !pageNotFound.object || !pageNotFound.object[0])
                         pageNotFound = `${pathname} could not be found for ${organization_id}`
 
                     res.writeHead(404, { 'Content-Type': 'text/plain' });
