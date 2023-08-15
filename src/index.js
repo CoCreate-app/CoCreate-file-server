@@ -42,6 +42,12 @@ class CoCreateFileSystem {
 
         server.on('request', async (req, res) => {
             try {
+                const fileContent = req.headers['File-Content']
+                if (fileContent) {
+                    res.writeHead(200, { 'Content-Type': req.headers['Content-Type'] });
+                    return res.end(fileContent);
+                }
+
                 const valideUrl = new URL(`http://${req.headers.host}${req.url}`);
                 const hostname = valideUrl.hostname;
 
@@ -174,6 +180,9 @@ class CoCreateFileSystem {
                         console.warn('server-render: ' + err.message)
                     }
                 }
+                if (file.modified)
+                    res.setHeader('Last-Modified', file.modified.on);
+
                 res.writeHead(200, { 'Content-Type': contentType });
                 return res.end(src);
             } catch (error) {
