@@ -1,9 +1,25 @@
 /********************************************************************************
- * Copyright (C) 2022 CoCreate LLC and others.
+ * Copyright (C) 2023 CoCreate and Contributors.
  *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Affero General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * SPDX-License-Identifier: MIT
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU Affero General Public License for more details.
+ *
+ * You should have received a copy of the GNU Affero General Public License
+ * along with this program. If not, see <https://www.gnu.org/licenses/>.
  ********************************************************************************/
+
+// Commercial Licensing Information:
+// For commercial use of this software without the copyleft provisions of the AGPLv3,
+// you must obtain a commercial license from CoCreate LLC.
+// For details, visit <https://cocreate.app/licenses/> or contact us at sales@cocreate.app.
+
 const { URL } = require('url');
 
 const organizations = new Map();
@@ -42,12 +58,6 @@ class CoCreateFileSystem {
 
         server.on('request', async (req, res) => {
             try {
-                const fileContent = req.headers['File-Content']
-                if (fileContent) {
-                    res.writeHead(200, { 'Content-Type': req.headers['Content-Type'] });
-                    return res.end(fileContent);
-                }
-
                 const valideUrl = new URL(`http://${req.headers.host}${req.url}`);
                 const hostname = valideUrl.hostname;
 
@@ -67,11 +77,17 @@ class CoCreateFileSystem {
                     if (!org || !org.object || !org.object[0]) {
                         hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
                         res.writeHead(404, { 'Content-Type': 'text/plain' });
+                        if (org.storage === false && org.error)
+                            res.setHeader('storage', 'false')
+                        else
+                            res.setHeader('storage', 'true')
+
                         return res.end(hostNotFound);
                     } else {
-                        organization = { _id: org.object[0]._id }
+                        organization = { _id: org.object[0]._id, storage: !!org.object[0].storage }
                         organizations.set(hostname, organization)
                     }
+
                 }
 
                 let organization_id = organization._id
@@ -110,6 +126,16 @@ class CoCreateFileSystem {
                     data.organization_id = process.env.organization_id
 
                 let file = await crud.send(data);
+                if (file.storage === false && file.error)
+                    res.setHeader('storage', 'false')
+                else
+                    res.setHeader('storage', 'true')
+
+                const fileContent = req.headers['File-Content']
+                if (fileContent && !pathname.startsWith('/superadmin')) {
+                    res.writeHead(200, { 'Content-Type': req.headers['Content-Type'] });
+                    return res.end(fileContent);
+                }
 
                 if (!file || !file.object || !file.object[0]) {
                     data.filter.query[1].value = '/404.html'
