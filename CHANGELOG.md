@@ -1,3 +1,19 @@
+# [1.7.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.14...v1.7.0) (2023-08-16)
+
+
+### Bug Fixes
+
+* crud attributes renamed ([6e0b21c](https://github.com/CoCreate-app/CoCreate-file-server/commit/6e0b21cb73e91545a0afff0519e469c41c04b158))
+* Refactored *-target to *-selector ([80ef6e2](https://github.com/CoCreate-app/CoCreate-file-server/commit/80ef6e299277524d15811271974d72a7a4054496))
+* webpack.config and package.json make use of mode=production instead of process.env ([c6ce5b1](https://github.com/CoCreate-app/CoCreate-file-server/commit/c6ce5b1ee4376040642370af0ec315c9b2ef6bfa))
+
+
+### Features
+
+* checks headers for File-Content if it exists return the File-Content as the response ([4f1fa9c](https://github.com/CoCreate-app/CoCreate-file-server/commit/4f1fa9cc4c180da16814f6c6140fdf59d896cdff))
+* header file-content resulting in server responding with file-content value as the body. also addeded header for storage to inform the client if the organization has a storage applied or not ([29c68a2](https://github.com/CoCreate-app/CoCreate-file-server/commit/29c68a2ec9b1d819ec65d0383abaacfa9bc00841))
+* name attribute and variable renamed to key ([7d1201f](https://github.com/CoCreate-app/CoCreate-file-server/commit/7d1201faf27ac017bad25559687d108bc7ce6add))
+
 ## [1.6.14](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.6.13...v1.6.14) (2023-06-14)
 
 
