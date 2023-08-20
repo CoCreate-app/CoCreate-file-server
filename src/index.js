@@ -76,7 +76,7 @@ class CoCreateFileSystem {
 
                     if (!org || !org.object || !org.object[0]) {
                         hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
-                        res.writeHead(404, { 'Content-Type': 'text/plain' });
+                        res.writeHead(404, { 'Content-Type': 'text/html' });
                         if (org.storage === false && org.error)
                             res.setHeader('storage', 'false')
                         else
@@ -147,7 +147,7 @@ class CoCreateFileSystem {
                         pageNotFound = default404 || `${pathname} could not be found for ${organization_id}`
                     else
                         pageNotFound = pageNotFound.object[0].src
-                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
                     return res.end(pageNotFound);
                 }
 
@@ -162,7 +162,7 @@ class CoCreateFileSystem {
                         pageForbidden = default403 || `${pathname} access not allowed for ${organization_id}`
                     else
                         pageForbidden = pageForbidden.object[0].src
-                    res.writeHead(403, { 'Content-Type': 'text/plain' });
+                    res.writeHead(403, { 'Content-Type': 'text/html' });
                     return res.end(pageForbidden);
                 }
 
@@ -189,8 +189,11 @@ class CoCreateFileSystem {
                     let pageNotFound = await crud.send(data);
                     if (!pageNotFound || !pageNotFound.object || !pageNotFound.object[0])
                         pageNotFound = `${pathname} could not be found for ${organization_id}`
+                    else
+                        pageNotFound = pageNotFound.object[0].src
 
-                    res.writeHead(404, { 'Content-Type': 'text/plain' });
+
+                    res.writeHead(404, { 'Content-Type': 'text/html' });
                     return res.end(pageNotFound);
                 }
 
