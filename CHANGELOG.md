@@ -1,3 +1,10 @@
+## [1.9.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.9.1...v1.9.2) (2023-08-21)
+
+
+### Bug Fixes
+
+* removed webpack.config and build step as no webpack.config exist ([f76e65f](https://github.com/CoCreate-app/CoCreate-file-server/commit/f76e65f84478ba6cd61eef0a2ca52d439b887738))
+
 ## [1.9.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.9.0...v1.9.1) (2023-08-21)
 
 
