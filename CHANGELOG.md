@@ -1,3 +1,13 @@
+## [1.8.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.8.0...v1.8.1) (2023-08-21)
+
+
+### Bug Fixes
+
+* /dist/CoCreate.js updated to https://CoCreate.app/dist/CoCreate.js ([27b8e89](https://github.com/CoCreate-app/CoCreate-file-server/commit/27b8e897cebf50c5015bbc440d8f89563ed71ee3))
+* replace cdn with /dist ([58647d9](https://github.com/CoCreate-app/CoCreate-file-server/commit/58647d906e21150ec0a8d7dc448886ccaf30c6b1))
+* update content-type of error pages ([59cdfb2](https://github.com/CoCreate-app/CoCreate-file-server/commit/59cdfb26f9cd802fe778d249cb1b03dd13f44978))
+* update file uploader ([145f544](https://github.com/CoCreate-app/CoCreate-file-server/commit/145f5443619708676f425de1242b8a6f27ababf9))
+
 # [1.8.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.7.0...v1.8.0) (2023-08-17)
 
 
