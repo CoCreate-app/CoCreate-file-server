@@ -87,7 +87,6 @@ class CoCreateFileSystem {
                         organization = { _id: org.object[0]._id, storage: !!org.object[0].storage }
                         organizations.set(hostname, organization)
                     }
-
                 }
 
                 let organization_id = organization._id
@@ -133,6 +132,18 @@ class CoCreateFileSystem {
 
                 const fileContent = req.headers['File-Content']
                 if (fileContent && !pathname.startsWith('/superadmin')) {
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'in',
+                        data: fileContent,
+                        organization_id
+                    });
+
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: fileContent,
+                        organization_id
+                    });
+
                     res.writeHead(200, { 'Content-Type': req.headers['Content-Type'] });
                     return res.end(fileContent);
                 }
@@ -147,6 +158,13 @@ class CoCreateFileSystem {
                         pageNotFound = default404 || `${pathname} could not be found for ${organization_id}`
                     else
                         pageNotFound = pageNotFound.object[0].src
+
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: pageNotFound,
+                        organization_id
+                    });
+
                     res.writeHead(404, { 'Content-Type': 'text/html' });
                     return res.end(pageNotFound);
                 }
@@ -162,6 +180,13 @@ class CoCreateFileSystem {
                         pageForbidden = default403 || `${pathname} access not allowed for ${organization_id}`
                     else
                         pageForbidden = pageForbidden.object[0].src
+
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: pageForbidden,
+                        organization_id
+                    });
+
                     res.writeHead(403, { 'Content-Type': 'text/html' });
                     return res.end(pageForbidden);
                 }
@@ -192,6 +217,11 @@ class CoCreateFileSystem {
                     else
                         pageNotFound = pageNotFound.object[0].src
 
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: pageNotFound,
+                        organization_id
+                    });
 
                     res.writeHead(404, { 'Content-Type': 'text/html' });
                     return res.end(pageNotFound);
@@ -211,6 +241,12 @@ class CoCreateFileSystem {
                 }
                 if (file.modified)
                     res.setHeader('Last-Modified', file.modified.on);
+
+                crud.wsManager.emit("setBandwidth", {
+                    type: 'out',
+                    data: src,
+                    organization_id
+                });
 
                 res.writeHead(200, { 'Content-Type': contentType });
                 return res.end(src);
