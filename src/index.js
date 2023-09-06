@@ -42,7 +42,7 @@ class CoCreateFileSystem {
             return file.object[0].src
         }
 
-        let default403, default404, hostNotFound, signup
+        let default403, default404, hostNotFound, signup, balanceFalse
         defaultFiles('/403.html').then((file) => {
             default403 = file
         })
@@ -51,6 +51,9 @@ class CoCreateFileSystem {
         })
         defaultFiles('/hostNotFound.html').then((file) => {
             hostNotFound = file
+        })
+        defaultFiles('/balanceFalse').then((file) => {
+            balanceFalse = file
         })
         defaultFiles('/superadmin/signup.html').then((file) => {
             signup = file
@@ -76,12 +79,7 @@ class CoCreateFileSystem {
 
                     if (!org || !org.object || !org.object[0]) {
                         hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
-                        res.writeHead(404, { 'Content-Type': 'text/html' });
-                        if (org.storage === false && org.error)
-                            res.setHeader('storage', 'false')
-                        else
-                            res.setHeader('storage', 'true')
-
+                        res.writeHead(404, { 'Content-Type': 'text/html', 'storage': organization.storage });
                         return res.end(hostNotFound);
                     } else {
                         organization = { _id: org.object[0]._id, storage: !!org.object[0].storage }
@@ -90,7 +88,16 @@ class CoCreateFileSystem {
                 }
 
                 let organization_id = organization._id
+
+                let active = crud.wsManager.organizations.get(organization_id)
+                if (active === false) {
+                    balanceFalse = balanceFalse || 'This organizations account balance has fallen bellow 0: '
+                    res.writeHead(404, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage });
+                    return res.end(balanceFalse);
+                }
+
                 res.setHeader('organization', organization_id)
+                res.setHeader('storage', organization.storage);
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.setHeader('Access-Control-Allow-Methods', '');
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
@@ -125,10 +132,6 @@ class CoCreateFileSystem {
                     data.organization_id = process.env.organization_id
 
                 let file = await crud.send(data);
-                if (file.storage === false && file.error)
-                    res.setHeader('storage', 'false')
-                else
-                    res.setHeader('storage', 'true')
 
                 const fileContent = req.headers['File-Content']
                 if (fileContent && !pathname.startsWith('/superadmin')) {
