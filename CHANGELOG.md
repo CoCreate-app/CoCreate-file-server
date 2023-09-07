@@ -1,3 +1,11 @@
+# [1.10.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.9.2...v1.10.0) (2023-09-07)
+
+
+### Features
+
+* defaultFile balanceFalse returned as response if organization balance false below 0 ([ecd86b1](https://github.com/CoCreate-app/CoCreate-file-server/commit/ecd86b1ee76007bbfffa88841072970804cc8e98))
+* Log inBound and outBound bandwidth ([2f79c40](https://github.com/CoCreate-app/CoCreate-file-server/commit/2f79c40e8429c6cb189964a51f4a275497bc352b))
+
 ## [1.9.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.9.1...v1.9.2) (2023-08-21)
 
 
