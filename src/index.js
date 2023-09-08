@@ -26,38 +26,8 @@ const organizations = new Map();
 
 class CoCreateFileSystem {
     constructor(server, crud, render) {
-        async function defaultFiles(fileName) {
-            let file = await crud.send({
-                method: 'read.object',
-                array: 'files',
-                filter: {
-                    query: [
-                        { key: "path", value: fileName, operator: "$eq" }
-                    ]
-                },
-                organization_id: process.env.organization_id
-            })
-            if (!file || !file.object || !file.object[0])
-                return ''
-            return file.object[0].src
-        }
 
-        let default403, default404, hostNotFound, signup, balanceFalse
-        defaultFiles('/403.html').then((file) => {
-            default403 = file
-        })
-        defaultFiles('/404.html').then((file) => {
-            default404 = file
-        })
-        defaultFiles('/hostNotFound.html').then((file) => {
-            hostNotFound = file
-        })
-        defaultFiles('/balanceFalse').then((file) => {
-            balanceFalse = file
-        })
-        defaultFiles('/superadmin/signup.html').then((file) => {
-            signup = file
-        })
+        let hostNotFound
 
         server.on('request', async (req, res) => {
             try {
@@ -78,9 +48,9 @@ class CoCreateFileSystem {
                     })
 
                     if (!org || !org.object || !org.object[0]) {
-                        hostNotFound = hostNotFound || 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id
-                        res.writeHead(404, { 'Content-Type': 'text/html', 'storage': organization.storage });
-                        return res.end(hostNotFound);
+                        if (!hostNotFound)
+                            hostNotFound = await getDefaultFile('/hostNotFound.html')
+                        return sendResponse(hostNotFound.src, 404, { 'Content-Type': 'text/html', 'storage': organization.storage })
                     } else {
                         organization = { _id: org.object[0]._id, storage: !!org.object[0].storage }
                         organizations.set(hostname, organization)
@@ -89,31 +59,41 @@ class CoCreateFileSystem {
 
                 let organization_id = organization._id
 
-                let active = crud.wsManager.organizations.get(organization_id)
-                if (active === false) {
-                    balanceFalse = balanceFalse || 'This organizations account balance has fallen bellow 0: '
-                    res.writeHead(404, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage });
-                    return res.end(balanceFalse);
-                }
-
                 res.setHeader('organization', organization_id)
                 res.setHeader('storage', organization.storage);
                 res.setHeader('Access-Control-Allow-Origin', '*');
                 res.setHeader('Access-Control-Allow-Methods', '');
                 res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-                let pathname = valideUrl.pathname;
                 let parameters = valideUrl.searchParams;
                 if (parameters.size) {
                     console.log('parameters', parameters)
                 }
+
+                let pathname = valideUrl.pathname;
                 if (pathname.endsWith('/')) {
                     pathname += "index.html";
                 } else {
                     let directory = pathname.split("/").slice(-1)[0];
-                    if (!directory.includes('.')) {
+                    if (!directory.includes('.'))
                         pathname += "/index.html";
-                    }
+                }
+
+                let active = crud.wsManager.organizations.get(organization_id)
+                if (active === false) {
+                    let balanceFalse = await getDefaultFile('/balanceFalse.html')
+                    return sendResponse(balanceFalse.src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
+                }
+
+                const fileContent = req.headers['File-Content']
+                if (fileContent && !pathname.startsWith('/superadmin')) {
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'in',
+                        data: fileContent,
+                        organization_id
+                    });
+
+                    return sendResponse(fileContent, 200, { 'Content-Type': req.headers['Content-Type'] })
                 }
 
                 let data = {
@@ -128,70 +108,22 @@ class CoCreateFileSystem {
                     organization_id
                 }
 
-                if (pathname.startsWith('/superadmin'))
-                    data.organization_id = process.env.organization_id
 
-                let file = await crud.send(data);
-
-                const fileContent = req.headers['File-Content']
-                if (fileContent && !pathname.startsWith('/superadmin')) {
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'in',
-                        data: fileContent,
-                        organization_id
-                    });
-
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'out',
-                        data: fileContent,
-                        organization_id
-                    });
-
-                    res.writeHead(200, { 'Content-Type': req.headers['Content-Type'] });
-                    return res.end(fileContent);
-                }
+                let file
+                if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
+                    file = await getDefaultFile(pathname)
+                else
+                    file = await crud.send(data);
 
                 if (!file || !file.object || !file.object[0]) {
-                    data.filter.query[1].value = '/404.html'
-                    if (data.organization_id !== organization_id)
-                        data.organization_id = organization_id
-
-                    let pageNotFound = await crud.send(data);
-                    if (!pageNotFound || !pageNotFound.object || !pageNotFound.object[0])
-                        pageNotFound = default404 || `${pathname} could not be found for ${organization_id}`
-                    else
-                        pageNotFound = pageNotFound.object[0].src
-
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'out',
-                        data: pageNotFound,
-                        organization_id
-                    });
-
-                    res.writeHead(404, { 'Content-Type': 'text/html' });
-                    return res.end(pageNotFound);
+                    let pageNotFound = await getDefaultFile('/404.html')
+                    return sendResponse(pageNotFound.src, 404, { 'Content-Type': 'text/html' })
                 }
 
                 file = file.object[0]
                 if (!file['public'] || file['public'] === "false") {
-                    data.filter.query[1].value = '/403.html'
-                    if (data.organization_id !== organization_id)
-                        data.organization_id = organization_id
-
-                    let pageForbidden = await crud.send(data);
-                    if (!pageForbidden || !pageForbidden.object || !pageForbidden.object[0])
-                        pageForbidden = default403 || `${pathname} access not allowed for ${organization_id}`
-                    else
-                        pageForbidden = pageForbidden.object[0].src
-
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'out',
-                        data: pageForbidden,
-                        organization_id
-                    });
-
-                    res.writeHead(403, { 'Content-Type': 'text/html' });
-                    return res.end(pageForbidden);
+                    let pageForbidden = await getDefaultFile('/403.html')
+                    return sendResponse(pageForbidden.src, 403, { 'Content-Type': 'text/html' })
                 }
 
                 let src;
@@ -210,28 +142,11 @@ class CoCreateFileSystem {
                 }
 
                 if (!src) {
-                    data.filter.query[1].value = '/404.html'
-                    if (data.organization_id !== organization_id)
-                        data.organization_id = organization_id
-
-                    let pageNotFound = await crud.send(data);
-                    if (!pageNotFound || !pageNotFound.object || !pageNotFound.object[0])
-                        pageNotFound = `${pathname} could not be found for ${organization_id}`
-                    else
-                        pageNotFound = pageNotFound.object[0].src
-
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'out',
-                        data: pageNotFound,
-                        organization_id
-                    });
-
-                    res.writeHead(404, { 'Content-Type': 'text/html' });
-                    return res.end(pageNotFound);
+                    let pageNotFound = await getDefaultFile('/404.html')
+                    return sendResponse(pageNotFound.src, 404, { 'Content-Type': 'text/html' })
                 }
 
                 let contentType = file['content-type'] || 'text/html';
-
                 if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
                     src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                     src = Buffer.from(src, 'base64');
@@ -242,20 +157,85 @@ class CoCreateFileSystem {
                         console.warn('server-render: ' + err.message)
                     }
                 }
+
                 if (file.modified)
                     res.setHeader('Last-Modified', file.modified.on);
 
-                crud.wsManager.emit("setBandwidth", {
-                    type: 'out',
-                    data: src,
-                    organization_id
-                });
+                sendResponse(src, 200, { 'Content-Type': contentType })
 
-                res.writeHead(200, { 'Content-Type': contentType });
-                return res.end(src);
+                function sendResponse(src, statusCode, headers) {
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: src,
+                        organization_id
+                    });
+
+                    res.writeHead(statusCode, headers);
+                    return res.end(src);
+                }
+
+                async function getDefaultFile(fileName) {
+                    data.filter.query[1].value = fileName
+                    let defaultFile
+                    if (fileName !== '/hostNotFound.html')
+                        defaultFile = await crud.send(data);
+
+                    if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
+                        return defaultFile.object[0]
+                    } else {
+                        data.filter.query[0].value = ['*']
+                        data.organization_id = process.env.organization_id
+
+
+                        defaultFile = await crud.send(data)
+
+                        if (fileName !== '/hostNotFound.html') {
+                            crud.wsManager.emit("setBandwidth", {
+                                type: 'out',
+                                data,
+                                organization_id
+                            });
+
+                            crud.wsManager.emit("setBandwidth", {
+                                type: 'in',
+                                data: defaultFile,
+                                organization_id
+                            });
+                        }
+
+                        if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
+                            crud.send({
+                                method: 'create.object',
+                                array: 'files',
+                                object: defaultFile.object[0],
+                                organization_id
+                            })
+
+                            return defaultFile.object[0]
+                        } else {
+                            switch (fileName) {
+                                case '/403.html':
+                                    defaultFile = { src: `${pathname} access not allowed for ${organization_id}` };
+                                    break;
+                                case '/404.html':
+                                    defaultFile = { src: `${pathname} could not be found for ${organization_id}` };
+                                    break;
+                                case '/balanceFalse.html':
+                                    defaultFile = { src: 'This organizations account balance has fallen bellow 0: ' };
+                                    break;
+                                case '/hostNotFound.html':
+                                    defaultFile = { src: 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id };
+                                    break;
+                            }
+                            return defaultFile
+                        }
+                    }
+                }
+
+
             } catch (error) {
                 res.writeHead(400, { 'Content-Type': 'text/plain' });
-                return res.end('Invalid host format');
+                res.end('Invalid host format');
             }
         })
     }
