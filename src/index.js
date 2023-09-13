@@ -39,10 +39,12 @@ class CoCreateFileSystem {
                     let org = await crud.send({
                         method: 'read.object',
                         array: 'organizations',
-                        filter: {
-                            query: [
-                                { key: "host", value: [hostname], operator: "$in" }
-                            ]
+                        object: {
+                            $filter: {
+                                query: [
+                                    { key: "host", value: [hostname], operator: "$in" }
+                                ]
+                            }
                         },
                         organization_id: process.env.organization_id
                     })
@@ -99,11 +101,14 @@ class CoCreateFileSystem {
                 let data = {
                     method: 'read.object',
                     array: 'files',
-                    filter: {
-                        query: [
-                            { key: "host", value: [hostname, '*'], operator: "$in" },
-                            { key: "path", value: pathname, operator: "$eq" }
-                        ]
+                    object: {
+                        $filter: {
+                            query: [
+                                { key: "host", value: [hostname, '*'], operator: "$in" },
+                                { key: "path", value: pathname, operator: "$eq" }
+                            ],
+                            limit: 1
+                        }
                     },
                     organization_id
                 }
@@ -175,7 +180,7 @@ class CoCreateFileSystem {
                 }
 
                 async function getDefaultFile(fileName) {
-                    data.filter.query[1].value = fileName
+                    data.object.$filter.query[1].value = fileName
                     let defaultFile
                     if (fileName !== '/hostNotFound.html')
                         defaultFile = await crud.send(data);
@@ -183,9 +188,8 @@ class CoCreateFileSystem {
                     if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
                         return defaultFile.object[0]
                     } else {
-                        data.filter.query[0].value = ['*']
+                        data.object.$filter.query[0].value = ['*']
                         data.organization_id = process.env.organization_id
-
 
                         defaultFile = await crud.send(data)
 
