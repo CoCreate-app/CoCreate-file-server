@@ -39,12 +39,10 @@ class CoCreateFileSystem {
                     let org = await crud.send({
                         method: 'read.object',
                         array: 'organizations',
-                        object: {
-                            $filter: {
-                                query: [
-                                    { key: "host", value: [hostname], operator: "$in" }
-                                ]
-                            }
+                        $filter: {
+                            query: [
+                                { key: "host", value: [hostname], operator: "$in" }
+                            ]
                         },
                         organization_id: process.env.organization_id
                     })
@@ -52,7 +50,7 @@ class CoCreateFileSystem {
                     if (!org || !org.object || !org.object[0]) {
                         if (!hostNotFound)
                             hostNotFound = await getDefaultFile('/hostNotFound.html')
-                        return sendResponse(hostNotFound.src, 404, { 'Content-Type': 'text/html', 'storage': organization.storage })
+                        return sendResponse(hostNotFound.object[0].src, 404, { 'Content-Type': 'text/html', 'storage': organization.storage })
                     } else {
                         organization = { _id: org.object[0]._id, storage: !!org.object[0].storage }
                         organizations.set(hostname, organization)
@@ -84,7 +82,7 @@ class CoCreateFileSystem {
                 let active = crud.wsManager.organizations.get(organization_id)
                 if (active === false) {
                     let balanceFalse = await getDefaultFile('/balanceFalse.html')
-                    return sendResponse(balanceFalse.src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
+                    return sendResponse(balanceFalse.object[0].src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
                 }
 
                 const fileContent = req.headers['File-Content']
@@ -101,14 +99,12 @@ class CoCreateFileSystem {
                 let data = {
                     method: 'read.object',
                     array: 'files',
-                    object: {
-                        $filter: {
-                            query: [
-                                { key: "host", value: [hostname, '*'], operator: "$in" },
-                                { key: "path", value: pathname, operator: "$eq" }
-                            ],
-                            limit: 1
-                        }
+                    $filter: {
+                        query: [
+                            { key: "host", value: [hostname, '*'], operator: "$in" },
+                            { key: "path", value: pathname, operator: "$eq" }
+                        ],
+                        limit: 1
                     },
                     organization_id
                 }
@@ -122,13 +118,13 @@ class CoCreateFileSystem {
 
                 if (!file || !file.object || !file.object[0]) {
                     let pageNotFound = await getDefaultFile('/404.html')
-                    return sendResponse(pageNotFound.src, 404, { 'Content-Type': 'text/html' })
+                    return sendResponse(pageNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
                 }
 
                 file = file.object[0]
                 if (!file['public'] || file['public'] === "false") {
                     let pageForbidden = await getDefaultFile('/403.html')
-                    return sendResponse(pageForbidden.src, 403, { 'Content-Type': 'text/html' })
+                    return sendResponse(pageForbidden.object[0].src, 403, { 'Content-Type': 'text/html' })
                 }
 
                 let src;
@@ -148,7 +144,7 @@ class CoCreateFileSystem {
 
                 if (!src) {
                     let pageNotFound = await getDefaultFile('/404.html')
-                    return sendResponse(pageNotFound.src, 404, { 'Content-Type': 'text/html' })
+                    return sendResponse(pageNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
                 }
 
                 let contentType = file['content-type'] || 'text/html';
@@ -180,15 +176,15 @@ class CoCreateFileSystem {
                 }
 
                 async function getDefaultFile(fileName) {
-                    data.object.$filter.query[1].value = fileName
+                    data.$filter.query[1].value = fileName
                     let defaultFile
                     if (fileName !== '/hostNotFound.html')
                         defaultFile = await crud.send(data);
 
                     if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
-                        return defaultFile.object[0]
+                        return defaultFile
                     } else {
-                        data.object.$filter.query[0].value = ['*']
+                        data.$filter.query[0].value = ['*']
                         data.organization_id = process.env.organization_id
 
                         defaultFile = await crud.send(data)
@@ -215,20 +211,20 @@ class CoCreateFileSystem {
                                 organization_id
                             })
 
-                            return defaultFile.object[0]
+                            return defaultFile
                         } else {
                             switch (fileName) {
                                 case '/403.html':
-                                    defaultFile = { src: `${pathname} access not allowed for ${organization_id}` };
+                                    defaultFile.object = [{ src: `${pathname} access not allowed for ${organization_id}` }]
                                     break;
                                 case '/404.html':
-                                    defaultFile = { src: `${pathname} could not be found for ${organization_id}` };
+                                    defaultFile.object = [{ src: `${pathname} could not be found for ${organization_id}` }];
                                     break;
                                 case '/balanceFalse.html':
-                                    defaultFile = { src: 'This organizations account balance has fallen bellow 0: ' };
+                                    defaultFile.object = [{ src: 'This organizations account balance has fallen bellow 0: ' }];
                                     break;
                                 case '/hostNotFound.html':
-                                    defaultFile = { src: 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id };
+                                    defaultFile.object = [{ src: 'An organization could not be found using the host: ' + hostname + ' in platformDB: ' + process.env.organization_id }];
                                     break;
                             }
                             return defaultFile
