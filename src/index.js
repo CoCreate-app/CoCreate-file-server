@@ -85,17 +85,6 @@ class CoCreateFileSystem {
                     return sendResponse(balanceFalse.object[0].src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
                 }
 
-                const fileContent = req.headers['File-Content']
-                if (fileContent && !pathname.startsWith('/superadmin')) {
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'in',
-                        data: fileContent,
-                        organization_id
-                    });
-
-                    return sendResponse(fileContent, 200, { 'Content-Type': req.headers['Content-Type'] })
-                }
-
                 let data = {
                     method: 'read.object',
                     array: 'files',
