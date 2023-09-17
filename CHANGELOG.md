@@ -1,3 +1,17 @@
+# [1.11.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.10.0...v1.11.0) (2023-09-17)
+
+
+### Bug Fixes
+
+* applied $filter in object ([1d05b5c](https://github.com/CoCreate-app/CoCreate-file-server/commit/1d05b5cafb190fe782772d8c8add14cf8ea089d3))
+* moved $filter outside of object ([5d6d232](https://github.com/CoCreate-app/CoCreate-file-server/commit/5d6d232dcc51f4b0969a94817d32a96998b4026f))
+* removed file-content code ([1f59131](https://github.com/CoCreate-app/CoCreate-file-server/commit/1f59131a8089e0e9f334bd4e81b88ec0a8b54cca))
+
+
+### Features
+
+*  handeling of default files and improved bandwidth tracking ([f49516a](https://github.com/CoCreate-app/CoCreate-file-server/commit/f49516adcb6292b1dd57fdda68de3a97897f787b))
+
 # [1.10.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.9.2...v1.10.0) (2023-09-07)
 
 
