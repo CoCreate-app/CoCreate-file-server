@@ -91,7 +91,7 @@ class CoCreateFileSystem {
                     $filter: {
                         query: [
                             { key: "host", value: [hostname, '*'], operator: "$in" },
-                            { key: "path", value: pathname, operator: "$eq" }
+                            { key: "pathname", value: pathname, operator: "$eq" }
                         ],
                         limit: 1
                     },
