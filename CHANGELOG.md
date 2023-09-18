@@ -1,3 +1,11 @@
+## [1.11.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.11.0...v1.11.1) (2023-09-18)
+
+
+### Bug Fixes
+
+*  Add path and pathname ([f2ff42d](https://github.com/CoCreate-app/CoCreate-file-server/commit/f2ff42d5ecfc46807f03753c586feec1ea848148))
+* Update dCoCreate dpendencies to latest versions ([7945630](https://github.com/CoCreate-app/CoCreate-file-server/commit/794563023c42884ddfad4a9d4c434423b67ebf32))
+
 # [1.11.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.10.0...v1.11.0) (2023-09-17)
 
 
