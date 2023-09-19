@@ -176,6 +176,9 @@ class CoCreateFileSystem {
                         data.$filter.query[0].value = ['*']
                         data.organization_id = process.env.organization_id
 
+                        if (fileName.startsWith('/admin'))
+                            data.$filter.query[1].value = '/superadmin' + fileName.replace('/admin', '')
+
                         defaultFile = await crud.send(data)
 
                         if (fileName !== '/hostNotFound.html') {
@@ -193,6 +196,12 @@ class CoCreateFileSystem {
                         }
 
                         if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
+                            if (fileName.startsWith('/admin')) {
+                                data.object[0].directory = 'admin'
+                                data.object[0].path = '/admin' + data.object[0].path.replace('/superadmin', '')
+                                data.object[0].pathname = fileName
+                            }
+
                             crud.send({
                                 method: 'create.object',
                                 array: 'files',
