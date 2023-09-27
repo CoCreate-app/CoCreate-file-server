@@ -98,7 +98,6 @@ class CoCreateFileSystem {
                     organization_id
                 }
 
-
                 let file
                 if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
                     file = await getDefaultFile(pathname)
@@ -136,6 +135,14 @@ class CoCreateFileSystem {
                     return sendResponse(pageNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
                 }
 
+
+                if (file.modified || file.created) {
+                    let modifiedOn = file.modified.on || file.created.on
+                    if (modifiedOn instanceof Date)
+                        modifiedOn = modifiedOn.toISOString()
+                    res.setHeader('Last-Modified', modifiedOn);
+                }
+
                 let contentType = file['content-type'] || 'text/html';
                 if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
                     src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
@@ -147,9 +154,6 @@ class CoCreateFileSystem {
                         console.warn('server-render: ' + err.message)
                     }
                 }
-
-                if (file.modified)
-                    res.setHeader('Last-Modified', file.modified.on);
 
                 sendResponse(src, 200, { 'Content-Type': contentType })
 
