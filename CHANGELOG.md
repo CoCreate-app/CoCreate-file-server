@@ -1,3 +1,11 @@
+## [1.11.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.11.1...v1.11.2) (2023-10-09)
+
+
+### Bug Fixes
+
+* improved handeling of header "last-modified" ([e508144](https://github.com/CoCreate-app/CoCreate-file-server/commit/e50814498fdd4cb859f06c345c8173d707fcdabd))
+* svg bug ([db9d9f7](https://github.com/CoCreate-app/CoCreate-file-server/commit/db9d9f79ec5ee8158ad0e2f7f72862e49badc7ec))
+
 ## [1.11.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.11.0...v1.11.1) (2023-09-18)
 
 
