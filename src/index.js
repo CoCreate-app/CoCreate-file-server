@@ -144,9 +144,7 @@ class CoCreateFileSystem {
                 }
 
                 let contentType = file['content-type'] || 'text/html';
-                if (contentType === 'image/svg+xml')
-                    contentType = contentType
-                else if (contentType.startsWith('image/') || contentType.startsWith('audio/') || contentType.startsWith('video/')) {
+                if (/^[A-Za-z0-9+/]+[=]{0,2}$/.test(src)) {
                     src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                     src = Buffer.from(src, 'base64');
                 } else if (contentType === 'text/html') {
