@@ -1,3 +1,10 @@
+# [1.12.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.11.4...v1.12.0) (2023-10-22)
+
+
+### Features
+
+* Identify base64 strings and convert to buffer for response ([1005ab3](https://github.com/CoCreate-app/CoCreate-file-server/commit/1005ab3a787170be4ec62c26f0daa16ced4f37b6))
+
 ## [1.11.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.11.3...v1.11.4) (2023-10-14)
 
 
