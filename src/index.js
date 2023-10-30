@@ -37,7 +37,7 @@ class CoCreateFileSystem {
                 let organization = organizations.get(hostname);
                 if (!organization) {
                     let org = await crud.send({
-                        method: 'read.object',
+                        method: 'object.read',
                         array: 'organizations',
                         $filter: {
                             query: [
@@ -86,7 +86,7 @@ class CoCreateFileSystem {
                 }
 
                 let data = {
-                    method: 'read.object',
+                    method: 'object.read',
                     array: 'files',
                     $filter: {
                         query: [
@@ -120,7 +120,7 @@ class CoCreateFileSystem {
                     src = file['src'];
                 else {
                     let fileSrc = await crud.send({
-                        method: 'read.object',
+                        method: 'object.read',
                         array: file['array'],
                         object: {
                             _id: file._id
@@ -207,7 +207,7 @@ class CoCreateFileSystem {
                             }
 
                             crud.send({
-                                method: 'create.object',
+                                method: 'object.create',
                                 array: 'files',
                                 object: defaultFile.object[0],
                                 organization_id
