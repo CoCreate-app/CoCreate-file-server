@@ -1,3 +1,12 @@
+## [1.12.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.12.1...v1.12.2) (2023-11-03)
+
+
+### Bug Fixes
+
+* favicon.ico path ([c043a19](https://github.com/CoCreate-app/CoCreate-file-server/commit/c043a195998d3f19c1836acdf45ec195995e6c3d))
+* update dependencies to the lates versions ([e0d056a](https://github.com/CoCreate-app/CoCreate-file-server/commit/e0d056a766fd5d7e92509ee104780d20190501ae))
+* update method to use object.update etc ([6aa9f1b](https://github.com/CoCreate-app/CoCreate-file-server/commit/6aa9f1b3e9d27b0b2b709ef854505d4c09a26076))
+
 ## [1.12.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.12.0...v1.12.1) (2023-10-25)
 
 
