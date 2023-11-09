@@ -1,3 +1,10 @@
+## [1.12.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.12.2...v1.12.3) (2023-11-09)
+
+
+### Bug Fixes
+
+* meta name typo ([28736dd](https://github.com/CoCreate-app/CoCreate-file-server/commit/28736ddd87bcc71daba6910fbae97b755a58bf21))
+
 ## [1.12.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.12.1...v1.12.2) (2023-11-03)
 
 
