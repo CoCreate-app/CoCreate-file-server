@@ -1,3 +1,10 @@
+## [1.14.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.14.0...v1.14.1) (2023-11-25)
+
+
+### Bug Fixes
+
+* update licensing details ([a9096d6](https://github.com/CoCreate-app/CoCreate-file-server/commit/a9096d62361d84cdc1e6ff1cebfeb62db4d13a30))
+
 # [1.14.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.13.0...v1.14.0) (2023-11-25)
 
 
