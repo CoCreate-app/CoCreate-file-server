@@ -1,3 +1,10 @@
+# [1.15.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.14.1...v1.15.0) (2023-12-09)
+
+
+### Features
+
+* updated to  be used by lazyloader default ([ff8f720](https://github.com/CoCreate-app/CoCreate-file-server/commit/ff8f720ea51c20c6c5f9d44182351180ad320e6a))
+
 ## [1.14.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.14.0...v1.14.1) (2023-11-25)
 
 
