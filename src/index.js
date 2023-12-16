@@ -20,10 +20,6 @@
 // you must obtain a commercial license from CoCreate LLC.
 // For details, visit <https://cocreate.app/licenses/> or contact us at sales@cocreate.app.
 
-const { URL } = require('url');
-
-const organizations = new Map();
-
 class CoCreateFileSystem {
     constructor(render) {
         this.render = render
