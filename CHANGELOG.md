@@ -1,3 +1,10 @@
+## [1.15.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.15.0...v1.15.1) (2023-12-18)
+
+
+### Bug Fixes
+
+* removed organizations map and url module ([a82bc56](https://github.com/CoCreate-app/CoCreate-file-server/commit/a82bc56a8e82f9fdabfdeb7592e140e4c3ad3aff))
+
 # [1.15.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.14.1...v1.15.0) (2023-12-09)
 
 
