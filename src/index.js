@@ -44,7 +44,7 @@ class CoCreateFileSystem {
             let pathname = valideUrl.pathname;
             if (pathname.endsWith('/')) {
                 pathname += "index.html";
-            } else {
+            } else if (!pathname.startsWith('/.well-known/acme-challenge')) {
                 let directory = pathname.split("/").slice(-1)[0];
                 if (!directory.includes('.'))
                     pathname += "/index.html";
@@ -107,8 +107,9 @@ class CoCreateFileSystem {
             }
 
 
-            if (file.modified || file.created) {
-                let modifiedOn = file.modified.on || file.created.on
+            let modifiedOn = file.modified || file.created
+            if (modifiedOn) {
+                modifiedOn = modifiedOn.on
                 if (modifiedOn instanceof Date)
                     modifiedOn = modifiedOn.toISOString()
                 res.setHeader('Last-Modified', modifiedOn);
