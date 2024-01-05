@@ -27,6 +27,11 @@ class CoCreateFileSystem {
 
     async send(req, res, crud, organization, valideUrl) {
         try {
+            if (!organization) {
+                let hostNotFound = await getDefaultFile('/hostNotFound.html')
+                return sendResponse(hostNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
+            }
+
             const organization_id = organization._id
             const hostname = valideUrl.hostname;
 
@@ -56,17 +61,47 @@ class CoCreateFileSystem {
                 return sendResponse(balanceFalse.object[0].src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
             }
 
+            let lastIndex = pathname.lastIndexOf('/');
+            let wildcardPath = pathname.substring(0, lastIndex + 1);
+            let wildcard = pathname.substring(lastIndex + 1);
+
+            if (wildcard.includes('.')) {
+                let fileLastIndex = wildcard.lastIndexOf('.');
+                let fileExtension = wildcard.substring(fileLastIndex); // Get extension
+                wildcard = wildcardPath + '*' + fileExtension; // Create wildcard for file name
+            } else {
+                wildcard = wildcardPath + '*'; // Append '*' if it's just a path or folder
+            }
+
+            // console.log("Wildcard: ", wildcard);
+
             let data = {
                 method: 'object.read',
                 array: 'files',
                 $filter: {
                     query: [
                         { key: "host", value: [hostname, '*'], operator: "$in" },
-                        { key: "pathname", value: pathname, operator: "$eq" }
+                        { key: "pathname", value: pathname, operator: "$eq" },
+                        // { key: "pathname", value: wildcard, operator: "$eq", logicalOperator: "or" }
                     ],
                     limit: 1
                 },
                 organization_id
+            }
+
+            if (organization.fileSystem) {
+                let fileSystem = organization.fileSystem.find(element => element.name === hostname)
+                for (let i = 0; i < fileSystem; i++) {
+                    if (fileSystem[i].name === hostname) {
+                        if (fileSystem[i].storage)
+                            data.storage = fileSystem[i].storage
+                        if (fileSystem[i].database)
+                            data.database = fileSystem[i].database
+                        if (fileSystem[i].array)
+                            data.array = fileSystem[i].array
+                        break
+                    }
+                }
             }
 
             let file
