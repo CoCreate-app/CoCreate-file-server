@@ -80,7 +80,8 @@ class CoCreateFileSystem {
                 array: 'files',
                 $filter: {
                     query: [
-                        { key: "host", value: [hostname, '*'], operator: "$in" },
+                        { key: "host", value: [hostname, '*'], operator: "$elemMatch" },
+                        // { key: "host", value: [hostname, '*'], operator: "$in" },
                         { key: "pathname", value: pathname, operator: "$eq" },
                         // { key: "pathname", value: wildcard, operator: "$eq", logicalOperator: "or" }
                     ],
@@ -89,16 +90,18 @@ class CoCreateFileSystem {
                 organization_id
             }
 
-            if (organization.fileSystem) {
-                let fileSystem = organization.fileSystem.find(element => element.name === hostname)
-                for (let i = 0; i < fileSystem; i++) {
-                    if (fileSystem[i].name === hostname) {
-                        if (fileSystem[i].storage)
-                            data.storage = fileSystem[i].storage
-                        if (fileSystem[i].database)
-                            data.database = fileSystem[i].database
-                        if (fileSystem[i].array)
-                            data.array = fileSystem[i].array
+            if (organization.host) {
+                let host = organization.host
+                for (let i = 0; i < host; i++) {
+                    if (host[i].name === hostname) {
+                        if (host[i].storage)
+                            data.storage = host[i].storage
+                        if (host[i].database)
+                            data.database = host[i].database
+                        if (host[i].array)
+                            data.array = host[i].array
+                        if (host[i].files)
+                            data = { ...data, ...host[i].files }
                         break
                     }
                 }
