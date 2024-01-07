@@ -36,7 +36,7 @@ class CoCreateFileSystem {
             const hostname = valideUrl.hostname;
 
             res.setHeader('organization', organization_id)
-            res.setHeader('storage', organization.storage);
+            res.setHeader('storage', !!organization.storage);
             res.setHeader('Access-Control-Allow-Origin', '*');
             res.setHeader('Access-Control-Allow-Methods', '');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
