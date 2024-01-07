@@ -89,23 +89,6 @@ class CoCreateFileSystem {
                 organization_id
             }
 
-            if (organization.host) {
-                let host = organization.host
-                for (let i = 0; i < host.length; i++) {
-                    if (host[i].name === hostname) {
-                        if (host[i].storage)
-                            data.storage = host[i].storage
-                        if (host[i].database)
-                            data.database = host[i].database
-                        if (host[i].array)
-                            data.array = host[i].array
-                        if (host[i].files)
-                            data = { ...data, ...host[i].files }
-                        break
-                    }
-                }
-            }
-
             let file
             if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
                 file = await getDefaultFile(pathname)
