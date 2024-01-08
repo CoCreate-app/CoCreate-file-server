@@ -1,3 +1,19 @@
+# [1.16.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.15.2...v1.16.0) (2024-01-08)
+
+
+### Bug Fixes
+
+* applied host to define environment/branch ([e3ad9e0](https://github.com/CoCreate-app/CoCreate-file-server/commit/e3ad9e0f38aafa3710d3ae49957ebe714b765e22))
+* convert storage to boolean ([280a178](https://github.com/CoCreate-app/CoCreate-file-server/commit/280a178da956cb943e41d13854e330709ed2b1eb))
+* removed host.files as handled from crud-server ([5418c06](https://github.com/CoCreate-app/CoCreate-file-server/commit/5418c06cc00985115045bcfbfc03d56cafaf3a09))
+
+
+### Features
+
+* bumped CoCreate dependencies to their latest versions ([5ad1994](https://github.com/CoCreate-app/CoCreate-file-server/commit/5ad199440e9023fa25301c7eef98f033c5832e66))
+* query wildcard pathname ([bdd4e99](https://github.com/CoCreate-app/CoCreate-file-server/commit/bdd4e998bd986469dad99d6976c2fc9288ddef1d))
+* routing logic per host ([7964778](https://github.com/CoCreate-app/CoCreate-file-server/commit/7964778ce6ee231c39ea6ce7721e6ec5da3ad107))
+
 ## [1.15.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.15.1...v1.15.2) (2023-12-31)
 
 
