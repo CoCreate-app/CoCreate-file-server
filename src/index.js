@@ -41,25 +41,18 @@ class CoCreateFileSystem {
             res.setHeader('Access-Control-Allow-Methods', '');
             res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
+            let active = crud.wsManager.organizations.get(organization_id)
+            if (active === false) {
+                let balanceFalse = await getDefaultFile('/balanceFalse.html')
+                return sendResponse(balanceFalse.object[0].src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
+            }
+
             let parameters = valideUrl.searchParams;
             if (parameters.size) {
                 console.log('parameters', parameters)
             }
 
             let pathname = valideUrl.pathname;
-            if (pathname.endsWith('/')) {
-                pathname += "index.html";
-            } else if (!pathname.startsWith('/.well-known/acme-challenge')) {
-                let directory = pathname.split("/").slice(-1)[0];
-                if (!directory.includes('.'))
-                    pathname += "/index.html";
-            }
-
-            let active = crud.wsManager.organizations.get(organization_id)
-            if (active === false) {
-                let balanceFalse = await getDefaultFile('/balanceFalse.html')
-                return sendResponse(balanceFalse.object[0].src, 403, { 'Content-Type': 'text/html', 'Account-Balance': 'false', 'storage': organization.storage })
-            }
 
             let lastIndex = pathname.lastIndexOf('/');
             let wildcardPath = pathname.substring(0, lastIndex + 1);
@@ -70,7 +63,15 @@ class CoCreateFileSystem {
                 let fileExtension = wildcard.substring(fileLastIndex); // Get extension
                 wildcard = wildcardPath + '*' + fileExtension; // Create wildcard for file name
             } else {
-                wildcard = wildcardPath + '*'; // Append '*' if it's just a path or folder
+                wildcard = wildcardPath + '*/index.html'; // Append '*' if it's just a path or folder
+            }
+
+            if (pathname.endsWith('/')) {
+                pathname += "index.html";
+            } else if (!pathname.startsWith('/.well-known/acme-challenge')) {
+                let directory = pathname.split("/").slice(-1)[0];
+                if (!directory.includes('.'))
+                    pathname += "/index.html";
             }
 
             // console.log("Wildcard: ", wildcard);
