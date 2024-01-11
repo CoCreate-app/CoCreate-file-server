@@ -1,3 +1,10 @@
+## [1.16.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.0...v1.16.1) (2024-01-11)
+
+
+### Bug Fixes
+
+* wildcard without ext should defualt to */index.html ([7779170](https://github.com/CoCreate-app/CoCreate-file-server/commit/77791709688373f51db672937f3b64c1f1fae5a3))
+
 # [1.16.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.15.2...v1.16.0) (2024-01-08)
 
 
