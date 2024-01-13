@@ -81,11 +81,10 @@ class CoCreateFileSystem {
                 host: hostname,
                 array: 'files',
                 $filter: {
-                    query: [
-                        { key: "host", value: [hostname, '*'], operator: "$in" },
-                        { key: "pathname", value: pathname, operator: "$or" },
-                        { key: "pathname", value: wildcard, operator: "$or" }
-                    ],
+                    query: {
+                        host: { $in: [hostname, '*'] },
+                        $or: [{ pathname }, { pathname: wildcard }]
+                    },
                     limit: 1
                 },
                 organization_id
@@ -164,7 +163,7 @@ class CoCreateFileSystem {
             }
 
             async function getDefaultFile(fileName) {
-                data.$filter.query[1].value = fileName
+                data.$filter.query.$or[0].pathname = fileName
                 let defaultFile
                 if (fileName !== '/hostNotFound.html')
                     defaultFile = await crud.send(data);
@@ -172,11 +171,11 @@ class CoCreateFileSystem {
                 if (defaultFile && defaultFile.object && defaultFile.object[0] && defaultFile.object[0].src) {
                     return defaultFile
                 } else {
-                    data.$filter.query[0].value = ['*']
+                    data.$filter.query.host.$in = ['*']
                     data.organization_id = process.env.organization_id
 
                     if (fileName.startsWith('/admin'))
-                        data.$filter.query[1].value = '/superadmin' + fileName.replace('/admin', '')
+                        data.$filter.query.$or[0].pathname = '/superadmin' + fileName.replace('/admin', '')
 
                     defaultFile = await crud.send(data)
 
