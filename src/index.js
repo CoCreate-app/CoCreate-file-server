@@ -27,7 +27,7 @@ class CoCreateFileSystem {
 
     async send(req, res, crud, organization, valideUrl) {
         try {
-            if (!organization) {
+            if (!organization || organization.error) {
                 let hostNotFound = await getDefaultFile('/hostNotFound.html')
                 return sendResponse(hostNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
             }
