@@ -1,3 +1,11 @@
+## [1.16.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.1...v1.16.2) (2024-01-17)
+
+
+### Bug Fixes
+
+* return if organization.error ([b6425eb](https://github.com/CoCreate-app/CoCreate-file-server/commit/b6425eb780f2a031a3e68bd7f61226774d65d966))
+* update to support new query system ([e46947c](https://github.com/CoCreate-app/CoCreate-file-server/commit/e46947cb3c6ee63975ae6c696e5ac5f6ef6e5cb6))
+
 ## [1.16.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.0...v1.16.1) (2024-01-11)
 
 
