@@ -1,3 +1,10 @@
+## [1.16.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.2...v1.16.3) (2024-02-05)
+
+
+### Bug Fixes
+
+* Removed https://cdn.cocreate.app/latest/CoCreate.min.css ([eb6b394](https://github.com/CoCreate-app/CoCreate-file-server/commit/eb6b394e86ae23b81cabfc68cf1f812d4d5f76d7))
+
 ## [1.16.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.1...v1.16.2) (2024-01-17)
 
 
