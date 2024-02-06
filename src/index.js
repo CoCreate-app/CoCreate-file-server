@@ -74,8 +74,6 @@ class CoCreateFileSystem {
                     pathname += "/index.html";
             }
 
-            // console.log("Wildcard: ", wildcard);
-
             let data = {
                 method: 'object.read',
                 host: hostname,
