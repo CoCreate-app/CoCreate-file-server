@@ -1,3 +1,10 @@
+## [1.16.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.3...v1.16.4) (2024-02-13)
+
+
+### Bug Fixes
+
+* removed comment ([f7ca055](https://github.com/CoCreate-app/CoCreate-file-server/commit/f7ca05589ac46fee98f6f46242688da6fd231b8b))
+
 ## [1.16.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.2...v1.16.3) (2024-02-05)
 
 
