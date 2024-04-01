@@ -150,14 +150,27 @@ class CoCreateFileSystem {
             sendResponse(src, 200, { 'Content-Type': contentType })
 
             function sendResponse(src, statusCode, headers) {
-                crud.wsManager.emit("setBandwidth", {
-                    type: 'out',
-                    data: src,
-                    organization_id
-                });
+                try {
+                    if (src instanceof Uint8Array) {
+                        src = Buffer.from(src);
+                    } else if (Buffer.isBuffer(src)) {
+                        console.log('buffer')
+                        return
+                    }
 
-                res.writeHead(statusCode, headers);
-                return res.end(src);
+                    if (typeof src === 'object') {
+                        src = JSON.stringify(src);
+                    }
+                    crud.wsManager.emit("setBandwidth", {
+                        type: 'out',
+                        data: src,
+                        organization_id
+                    });
+                    res.writeHead(statusCode, headers);
+                    return res.end(src);
+                } catch (error) {
+                    console.log(error)
+                }
             }
 
             async function getDefaultFile(fileName) {
