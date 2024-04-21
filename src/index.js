@@ -88,6 +88,8 @@ class CoCreateFileSystem {
                 organization_id
             }
 
+            if (pathname.includes('1240-1240'))
+                console.log('test')
             let file
             if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
                 file = await getDefaultFile(pathname)
@@ -156,11 +158,10 @@ class CoCreateFileSystem {
                     } else if (Buffer.isBuffer(src)) {
                         console.log('buffer')
                         return
-                    }
-
-                    if (typeof src === 'object') {
+                    } else if (typeof src === 'object') {
                         src = JSON.stringify(src);
                     }
+
                     crud.wsManager.emit("setBandwidth", {
                         type: 'out',
                         data: src,
