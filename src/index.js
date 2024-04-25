@@ -27,13 +27,28 @@ class CoCreateFileSystem {
 
     async send(req, res, crud, organization, valideUrl) {
         try {
+            const hostname = valideUrl.hostname;
+
+            let data = {
+                method: 'object.read',
+                host: hostname,
+                array: 'files',
+                $filter: {
+                    query: {
+                        host: { $in: [hostname, '*'] },
+                        $or: []
+                    },
+                    limit: 1
+                }
+            }
+
             if (!organization || organization.error) {
                 let hostNotFound = await getDefaultFile('/hostNotFound.html')
                 return sendResponse(hostNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
             }
 
             const organization_id = organization._id
-            const hostname = valideUrl.hostname;
+            data.organization_id = organization_id
 
             res.setHeader('organization', organization_id)
             res.setHeader('storage', !!organization.storage);
@@ -74,19 +89,20 @@ class CoCreateFileSystem {
                     pathname += "/index.html";
             }
 
-            let data = {
-                method: 'object.read',
-                host: hostname,
-                array: 'files',
-                $filter: {
-                    query: {
-                        host: { $in: [hostname, '*'] },
-                        $or: [{ pathname }, { pathname: wildcard }]
-                    },
-                    limit: 1
-                },
-                organization_id
-            }
+            // let data = {
+            //     method: 'object.read',
+            //     host: hostname,
+            //     array: 'files',
+            //     $filter: {
+            //         query: {
+            //             host: { $in: [hostname, '*'] },
+            //             $or: [{ pathname }, { pathname: wildcard }]
+            //         },
+            //         limit: 1
+            //     },
+            //     organization_id
+            // }
+            data.$filter.query.$or = [{ pathname }, { pathname: wildcard }]
 
             let file
             if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
@@ -173,7 +189,7 @@ class CoCreateFileSystem {
             }
 
             async function getDefaultFile(fileName) {
-                data.$filter.query.$or[0].pathname = fileName
+                data.$filter.query.$or[0] = { pathname: fileName }
                 let defaultFile
                 if (fileName !== '/hostNotFound.html')
                     defaultFile = await crud.send(data);
