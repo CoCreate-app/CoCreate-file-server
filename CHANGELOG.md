@@ -1,3 +1,13 @@
+## [1.16.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.4...v1.16.5) (2024-04-26)
+
+
+### Bug Fixes
+
+* data object structure ([46fef9e](https://github.com/CoCreate-app/CoCreate-file-server/commit/46fef9e8892bf9af7efc4dad34b1287dd4286bbf))
+* handling of src data to format for sending over network ([591b84b](https://github.com/CoCreate-app/CoCreate-file-server/commit/591b84bdc2b53ccd41266ab4bab0048d15790fd7))
+* properly handle encoding ([2f37b7e](https://github.com/CoCreate-app/CoCreate-file-server/commit/2f37b7e90332e63edeff1c348c84356ec73ab193))
+* removed console.log ([d7d010f](https://github.com/CoCreate-app/CoCreate-file-server/commit/d7d010f99284a68b775d2e9f9b07aee631f19cd6))
+
 ## [1.16.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.3...v1.16.4) (2024-02-13)
 
 
