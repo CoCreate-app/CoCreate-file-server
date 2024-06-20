@@ -152,8 +152,11 @@ class CoCreateFileSystem {
             }
 
             let contentType = file['content-type'] || 'text/html';
-            if (/^[A-Za-z0-9+/]+[=]{0,2}$/.test(src)) {
+            // const cleanedSrc = src.replace(/\s/g, '');
+            if (/^data:image\/[a-zA-Z0-9+.-]+;base64,([A-Za-z0-9+/]+={0,2})$/.test(src)) {
                 src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+                src = Buffer.from(src, 'base64');
+            } else if (/^([A-Za-z0-9+/]+={0,2})$/.test(src)) {
                 src = Buffer.from(src, 'base64');
             } else if (contentType === 'text/html') {
                 try {
