@@ -1,3 +1,10 @@
+## [1.16.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.5...v1.16.6) (2024-06-20)
+
+
+### Bug Fixes
+
+* base64 test ([8dd6ffc](https://github.com/CoCreate-app/CoCreate-file-server/commit/8dd6ffc8d4a24116056ea392ae697e61bb523ed5))
+
 ## [1.16.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.4...v1.16.5) (2024-04-26)
 
 
