@@ -1,3 +1,10 @@
+## [1.16.10](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.9...v1.16.10) (2024-06-23)
+
+
+### Bug Fixes
+
+* lock file ([7c55696](https://github.com/CoCreate-app/CoCreate-file-server/commit/7c556963990d2c79bdb2078929d4f24e88160cef))
+
 ## [1.16.9](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.8...v1.16.9) (2024-06-23)
 
 
