@@ -21,8 +21,9 @@
 // For details, visit <https://cocreate.app/licenses/> or contact us at sales@cocreate.app.
 
 class CoCreateFileSystem {
-    constructor(render) {
+    constructor(render, sitemap) {
         this.render = render
+        this.sitemap = sitemap
     }
 
     async send(req, res, crud, organization, valideUrl) {
@@ -167,6 +168,7 @@ class CoCreateFileSystem {
             }
 
             sendResponse(src, 200, { 'Content-Type': contentType })
+            this.sitemap.check(file, hostname);
 
             function sendResponse(src, statusCode, headers) {
                 try {
