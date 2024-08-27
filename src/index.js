@@ -36,8 +36,7 @@ class CoCreateFileSystem {
                 array: 'files',
                 $filter: {
                     query: {
-                        host: { $in: [hostname, '*'] },
-                        $or: []
+                        host: { $in: [hostname, '*'] }
                     },
                     limit: 1
                 }
@@ -70,18 +69,6 @@ class CoCreateFileSystem {
 
             let pathname = valideUrl.pathname;
 
-            let lastIndex = pathname.lastIndexOf('/');
-            let wildcardPath = pathname.substring(0, lastIndex + 1);
-            let wildcard = pathname.substring(lastIndex + 1);
-
-            if (wildcard.includes('.')) {
-                let fileLastIndex = wildcard.lastIndexOf('.');
-                let fileExtension = wildcard.substring(fileLastIndex); // Get extension
-                wildcard = wildcardPath + '*' + fileExtension; // Create wildcard for file name
-            } else {
-                wildcard = wildcardPath + '*/index.html'; // Append '*' if it's just a path or folder
-            }
-
             if (pathname.endsWith('/')) {
                 pathname += "index.html";
             } else if (!pathname.startsWith('/.well-known/acme-challenge')) {
@@ -90,26 +77,31 @@ class CoCreateFileSystem {
                     pathname += "/index.html";
             }
 
-            // let data = {
-            //     method: 'object.read',
-            //     host: hostname,
-            //     array: 'files',
-            //     $filter: {
-            //         query: {
-            //             host: { $in: [hostname, '*'] },
-            //             $or: [{ pathname }, { pathname: wildcard }]
-            //         },
-            //         limit: 1
-            //     },
-            //     organization_id
-            // }
-            data.$filter.query.$or = [{ pathname }, { pathname: wildcard }]
+            data.$filter.query.pathname = pathname
 
             let file
             if (pathname.startsWith('/dist') || pathname.startsWith('/admin') || ['/403.html', '/404.html', '/offline.html', '/manifest.webmanifest', '/service-worker.js'].includes(pathname))
                 file = await getDefaultFile(pathname)
             else
                 file = await crud.send(data);
+
+            if (!file || !file.object || !file.object[0]) {
+                pathname = valideUrl.pathname
+                let lastIndex = pathname.lastIndexOf('/');
+                let wildcardPath = pathname.substring(0, lastIndex + 1);
+                let wildcard = pathname.substring(lastIndex + 1);
+
+                if (wildcard.includes('.')) {
+                    let fileLastIndex = wildcard.lastIndexOf('.');
+                    let fileExtension = wildcard.substring(fileLastIndex);
+                    wildcard = wildcardPath + '*' + fileExtension; // Create wildcard for file name
+                } else {
+                    wildcard = wildcardPath + '*/index.html'; // Append '*' if it's just a path or folder
+                }
+
+                data.$filter.query.pathname = wildcard
+                file = await crud.send(data);
+            }
 
             if (!file || !file.object || !file.object[0]) {
                 let pageNotFound = await getDefaultFile('/404.html')
