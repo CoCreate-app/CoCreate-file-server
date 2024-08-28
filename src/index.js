@@ -186,7 +186,8 @@ class CoCreateFileSystem {
             }
 
             async function getDefaultFile(fileName) {
-                data.$filter.query.$or[0] = { pathname: fileName }
+                data.$filter.query.pathname = fileName
+                // data.$filter.query.$or[0] = { pathname: fileName }
                 let defaultFile
                 if (fileName !== '/hostNotFound.html')
                     defaultFile = await crud.send(data);
@@ -198,7 +199,7 @@ class CoCreateFileSystem {
                     data.organization_id = process.env.organization_id
 
                     if (fileName.startsWith('/admin'))
-                        data.$filter.query.$or[0].pathname = '/superadmin' + fileName.replace('/admin', '')
+                        data.$filter.query.pathname = '/superadmin' + fileName.replace('/admin', '')
 
                     defaultFile = await crud.send(data)
 
