@@ -1,3 +1,12 @@
+## [1.16.11](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.10...v1.16.11) (2024-08-30)
+
+
+### Bug Fixes
+
+* $or operator removed from getDefaultFile ([d9f2b90](https://github.com/CoCreate-app/CoCreate-file-server/commit/d9f2b905b302a721ac8af847375e52af29f575dd))
+* add sitemap handling plugin ([870b15d](https://github.com/CoCreate-app/CoCreate-file-server/commit/870b15d93ad935538befcb0f7c85bc2110e4ede5))
+* query for file if not returned query for wildcard ([1af8851](https://github.com/CoCreate-app/CoCreate-file-server/commit/1af885132fcc47180b2756605988b0edd1841404))
+
 ## [1.16.10](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.9...v1.16.10) (2024-06-23)
 
 
