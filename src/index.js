@@ -145,7 +145,7 @@ class CoCreateFileSystem {
             }
 
             let contentType = file['content-type'] || 'text/html';
-            // const cleanedSrc = src.replace(/\s/g, '');
+
             if (/^data:image\/[a-zA-Z0-9+.-]+;base64,([A-Za-z0-9+/]+={0,2})$/.test(src)) {
                 src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
                 src = Buffer.from(src, 'base64');
@@ -155,8 +155,11 @@ class CoCreateFileSystem {
                 try {
                     src = await this.render.HTML(src, organization_id);
                 } catch (err) {
-                    console.warn('server-render: ' + err.message)
+                    console.warn('server-side-render: ' + err.message)
                 }
+            } else if (contentType === 'text/xml' || contentType === 'application/xml') {
+                const protocol = 'https://' // || req.headers['x-forwarded-proto'] || req.protocol;
+                src = src.replaceAll('{{$host}}', `${protocol}${hostname}`)
             }
 
             sendResponse(src, 200, { 'Content-Type': contentType })
