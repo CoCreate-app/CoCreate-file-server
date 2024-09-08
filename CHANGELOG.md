@@ -1,3 +1,10 @@
+# [1.17.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.11...v1.17.0) (2024-09-08)
+
+
+### Features
+
+* serve xml files and replaceAll {${host}} placeholders with requesting host ([7bda848](https://github.com/CoCreate-app/CoCreate-file-server/commit/7bda84882688c504e04c63e6f44546815754fe86))
+
 ## [1.16.11](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.10...v1.16.11) (2024-08-30)
 
 
