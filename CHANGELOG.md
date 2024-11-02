@@ -1,3 +1,10 @@
+## [1.17.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.17.0...v1.17.1) (2024-11-02)
+
+
+### Bug Fixes
+
+* handing condition if organization id not found ([d0a956d](https://github.com/CoCreate-app/CoCreate-file-server/commit/d0a956d2e1f88c5c836a346972dff72fc28f2b97))
+
 # [1.17.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.16.11...v1.17.0) (2024-09-08)
 
 
