@@ -42,12 +42,13 @@ class CoCreateFileSystem {
                 }
             }
 
+            let organization_id
             if (!organization || organization.error) {
                 let hostNotFound = await getDefaultFile('/hostNotFound.html')
                 return sendResponse(hostNotFound.object[0].src, 404, { 'Content-Type': 'text/html' })
             }
 
-            const organization_id = organization._id
+            organization_id = organization._id
             data.organization_id = organization_id
 
             res.setHeader('organization', organization_id)
@@ -176,11 +177,12 @@ class CoCreateFileSystem {
                         src = JSON.stringify(src);
                     }
 
-                    crud.wsManager.emit("setBandwidth", {
-                        type: 'out',
-                        data: src,
-                        organization_id
-                    });
+                    if (organization_id)
+                        crud.wsManager.emit("setBandwidth", {
+                            type: 'out',
+                            data: src,
+                            organization_id
+                        });
                     res.writeHead(statusCode, headers);
                     return res.end(src);
                 } catch (error) {
