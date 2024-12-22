@@ -1,3 +1,10 @@
+## [1.18.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.0...v1.18.1) (2024-12-22)
+
+
+### Bug Fixes
+
+* pass url to render.HTML ([c5827c3](https://github.com/CoCreate-app/CoCreate-file-server/commit/c5827c3247998014d2717b0ff426e98c9dffc145))
+
 # [1.18.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.17.1...v1.18.0) (2024-11-04)
 
 
