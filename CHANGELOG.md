@@ -1,3 +1,10 @@
+## [1.18.2](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.1...v1.18.2) (2025-04-30)
+
+
+### Bug Fixes
+
+* query attributes ([007e1fc](https://github.com/CoCreate-app/CoCreate-file-server/commit/007e1fcff257caca077a507563a2f63307b74c93))
+
 ## [1.18.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.0...v1.18.1) (2024-12-22)
 
 
