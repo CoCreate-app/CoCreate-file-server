@@ -99,10 +99,58 @@ class CoCreateFileSystem {
 					"/manifest.webmanifest",
 					"/service-worker.js"
 				].includes(pathname)
-			)
+			) {
 				file = await getDefaultFile(pathname);
-			else file = await crud.send(data);
+			} else {
+				file = await crud.send(data);
+			}
 
+			// --- Only check for BCP 47 if file not found ---
+			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
+			if (!file || !file.object || !file.object[0]) {
+				const match = pathname.match(bcp47Regex);
+				if (match) {
+					const langCode = match[1];
+					// Remove BCP 47 segment from pathname
+					const strippedPathname = pathname.replace(bcp47Regex, "/");
+					// Query for a file where languages[langCode].href matches strippedPathname
+					data.$filter.query = {
+						...data.$filter.query,
+						[`languages.${langCode}.href`]: strippedPathname
+					};
+					file = await crud.send(data);
+					if (file && file.object && file.object[0]) {
+						let language = file.languages[langCode];
+						let translation = language.translation;
+						if (typeof translation === "object") {
+							// Handle translation object case
+						} else {
+							translation = await crud.send({
+								method: "object.read",
+								host: hostname,
+								array: "translation",
+								object: {
+									_id: translation
+								},
+								organization_id
+							});
+						}
+						if (translation) {
+							// ToDo: apply translation to file
+						}
+
+						if (file.languages) {
+							// ToDo: Apply languages as links to to head of file
+							file.languages.forEach((lang) => {
+								let link = `<link rel="alternate" hreflang="${lang.code}" href="${lang.href}">`;
+								// Insert link into head of file
+							});
+						}
+					}
+				}
+			}
+
+			// --- Wildcard fallback ---
 			if (!file || !file.object || !file.object[0]) {
 				pathname = valideUrl.pathname;
 				let lastIndex = pathname.lastIndexOf("/");
@@ -137,8 +185,9 @@ class CoCreateFileSystem {
 			}
 
 			let src;
-			if (file["src"]) src = file["src"];
-			else {
+			if (file["src"]) {
+				src = file["src"];
+			} else {
 				let fileSrc = await crud.send({
 					method: "object.read",
 					host: hostname,
@@ -329,4 +378,5 @@ class CoCreateFileSystem {
 	}
 }
 
+module.exports = CoCreateFileSystem;
 module.exports = CoCreateFileSystem;
