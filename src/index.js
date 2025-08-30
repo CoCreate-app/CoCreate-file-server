@@ -26,9 +26,9 @@ class CoCreateFileSystem {
 		this.sitemap = sitemap;
 	}
 
-	async send(req, res, crud, organization, valideUrl) {
+	async send(req, res, crud, organization, urlObject) {
 		try {
-			const hostname = valideUrl.hostname;
+			const hostname = urlObject.hostname;
 
 			let data = {
 				method: "object.read",
@@ -72,12 +72,12 @@ class CoCreateFileSystem {
 				});
 			}
 
-			let parameters = valideUrl.searchParams;
+			let parameters = urlObject.searchParams;
 			if (parameters.size) {
 				console.log("parameters", parameters);
 			}
 
-			let pathname = valideUrl.pathname;
+			let pathname = urlObject.pathname;
 
 			if (pathname.endsWith("/")) {
 				pathname += "index.html";
@@ -86,7 +86,17 @@ class CoCreateFileSystem {
 				if (!directory.includes(".")) pathname += "/index.html";
 			}
 
-			data.$filter.query.pathname = pathname;
+			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
+			const match = pathname.match(bcp47Regex);
+			let lang, langRegion;
+			if (match) {
+				langRegion = match[1];
+				lang = langRegion.split("-")[0]; // Get just the base language (e.g., 'en', 'es', 'fr')
+				let newPathname = pathname.replace(langRegion, lang);
+				data.$filter.query.pathname = { $in: [newPathname, pathname] };
+			} else {
+				data.$filter.query.pathname = pathname;
+			}
 
 			let file;
 			if (
@@ -105,54 +115,9 @@ class CoCreateFileSystem {
 				file = await crud.send(data);
 			}
 
-			// --- Only check for BCP 47 if file not found ---
-			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
-			if (!file || !file.object || !file.object[0]) {
-				const match = pathname.match(bcp47Regex);
-				if (match) {
-					const langCode = match[1];
-					// Remove BCP 47 segment from pathname
-					const strippedPathname = pathname.replace(bcp47Regex, "/");
-					// Query for a file where languages[langCode].href matches strippedPathname
-					data.$filter.query = {
-						...data.$filter.query,
-						[`languages.${langCode}.href`]: strippedPathname
-					};
-					file = await crud.send(data);
-					if (file && file.object && file.object[0]) {
-						let language = file.languages[langCode];
-						let translation = language.translation;
-						if (typeof translation === "object") {
-							// Handle translation object case
-						} else {
-							translation = await crud.send({
-								method: "object.read",
-								host: hostname,
-								array: "translation",
-								object: {
-									_id: translation
-								},
-								organization_id
-							});
-						}
-						if (translation) {
-							// ToDo: apply translation to file
-						}
-
-						if (file.languages) {
-							// ToDo: Apply languages as links to to head of file
-							file.languages.forEach((lang) => {
-								let link = `<link rel="alternate" hreflang="${lang.code}" href="${lang.href}">`;
-								// Insert link into head of file
-							});
-						}
-					}
-				}
-			}
-
 			// --- Wildcard fallback ---
 			if (!file || !file.object || !file.object[0]) {
-				pathname = valideUrl.pathname;
+				pathname = urlObject.pathname;
 				let lastIndex = pathname.lastIndexOf("/");
 				let wildcardPath = pathname.substring(0, lastIndex + 1);
 				let wildcard = pathname.substring(lastIndex + 1);
@@ -228,11 +193,10 @@ class CoCreateFileSystem {
 				src = Buffer.from(src, "base64");
 			} else if (contentType === "text/html") {
 				try {
-					src = await this.render.HTML(
-						src,
-						organization_id,
-						valideUrl
-					);
+					file.urlObject = urlObject;
+					file.langRegion = langRegion;
+					file.lang = lang;
+					src = await this.render.HTML(file);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
 				}
@@ -378,5 +342,4 @@ class CoCreateFileSystem {
 	}
 }
 
-module.exports = CoCreateFileSystem;
 module.exports = CoCreateFileSystem;
