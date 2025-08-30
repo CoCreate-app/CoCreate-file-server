@@ -194,8 +194,12 @@ class CoCreateFileSystem {
 			} else if (contentType === "text/html") {
 				try {
 					file.urlObject = urlObject;
-					file.langRegion = langRegion;
-					file.lang = lang;
+					if (langRegion) {
+						file.langRegion = langRegion;
+					}
+					if (lang) {
+						file.lang = lang;
+					}	
 					src = await this.render.HTML(file);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
