@@ -26,9 +26,9 @@ class CoCreateFileSystem {
 		this.sitemap = sitemap;
 	}
 
-	async send(req, res, crud, organization, valideUrl) {
+	async send(req, res, crud, organization, urlObject) {
 		try {
-			const hostname = valideUrl.hostname;
+			const hostname = urlObject.hostname;
 
 			let data = {
 				method: "object.read",
@@ -72,12 +72,12 @@ class CoCreateFileSystem {
 				});
 			}
 
-			let parameters = valideUrl.searchParams;
+			let parameters = urlObject.searchParams;
 			if (parameters.size) {
 				console.log("parameters", parameters);
 			}
 
-			let pathname = valideUrl.pathname;
+			let pathname = urlObject.pathname;
 
 			if (pathname.endsWith("/")) {
 				pathname += "index.html";
@@ -86,7 +86,17 @@ class CoCreateFileSystem {
 				if (!directory.includes(".")) pathname += "/index.html";
 			}
 
-			data.$filter.query.pathname = pathname;
+			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
+			const match = pathname.match(bcp47Regex);
+			let lang, langRegion;
+			if (match) {
+				langRegion = match[1];
+				lang = langRegion.split("-")[0]; // Get just the base language (e.g., 'en', 'es', 'fr')
+				let newPathname = pathname.replace(langRegion, lang);
+				data.$filter.query.pathname = { $in: [newPathname, pathname] };
+			} else {
+				data.$filter.query.pathname = pathname;
+			}
 
 			let file;
 			if (
@@ -99,12 +109,15 @@ class CoCreateFileSystem {
 					"/manifest.webmanifest",
 					"/service-worker.js"
 				].includes(pathname)
-			)
+			) {
 				file = await getDefaultFile(pathname);
-			else file = await crud.send(data);
+			} else {
+				file = await crud.send(data);
+			}
 
+			// --- Wildcard fallback ---
 			if (!file || !file.object || !file.object[0]) {
-				pathname = valideUrl.pathname;
+				pathname = urlObject.pathname;
 				let lastIndex = pathname.lastIndexOf("/");
 				let wildcardPath = pathname.substring(0, lastIndex + 1);
 				let wildcard = pathname.substring(lastIndex + 1);
@@ -137,8 +150,9 @@ class CoCreateFileSystem {
 			}
 
 			let src;
-			if (file["src"]) src = file["src"];
-			else {
+			if (file["src"]) {
+				src = file["src"];
+			} else {
 				let fileSrc = await crud.send({
 					method: "object.read",
 					host: hostname,
@@ -179,11 +193,14 @@ class CoCreateFileSystem {
 				src = Buffer.from(src, "base64");
 			} else if (contentType === "text/html") {
 				try {
-					src = await this.render.HTML(
-						src,
-						organization_id,
-						valideUrl
-					);
+					file.urlObject = urlObject;
+					if (langRegion) {
+						file.langRegion = langRegion;
+					}
+					if (lang) {
+						file.lang = lang;
+					}	
+					src = await this.render.HTML(file);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
 				}
