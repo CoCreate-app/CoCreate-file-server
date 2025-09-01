@@ -1,3 +1,12 @@
+## [1.18.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.3...v1.18.4) (2025-09-01)
+
+
+### Bug Fixes
+
+* enhance file retrieval with BCP 47 language support and improve fallback logic ([f3f44f8](https://github.com/CoCreate-app/CoCreate-file-server/commit/f3f44f83a7b6403a3a080dc8e040eb0141dcfab1))
+* improve language handling in HTML rendering by conditionally setting langRegion and lang ([ea72c6e](https://github.com/CoCreate-app/CoCreate-file-server/commit/ea72c6eb2519d0564d7af181fcaee387ff5ee0b3))
+* refactor send method to use urlObject and enhance BCP 47 language handling ([c9f8591](https://github.com/CoCreate-app/CoCreate-file-server/commit/c9f859168beebad80df3e46de9cc74a43bbc11b2))
+
 ## [1.18.3](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.2...v1.18.3) (2025-05-01)
 
 
