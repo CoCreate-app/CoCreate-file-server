@@ -1,3 +1,10 @@
+## [1.18.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.4...v1.18.5) (2025-09-02)
+
+
+### Bug Fixes
+
+* enhance Cache-Control header handling in sendResponse function ([7b6f29c](https://github.com/CoCreate-app/CoCreate-file-server/commit/7b6f29cbe1511be4fa41670db55747e8ad61bc00))
+
 ## [1.18.4](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.3...v1.18.4) (2025-09-01)
 
 
