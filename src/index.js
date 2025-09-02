@@ -217,11 +217,41 @@ class CoCreateFileSystem {
 
 			function sendResponse(src, statusCode, headers) {
 				try {
+					let cacheControl;
+					if (statusCode >= 400) {
+						cacheControl = "no-cache, no-store, must-revalidate";
+					} else if (
+						file &&
+						file["cache-control"] !== undefined &&
+						file["cache-control"] !== null
+					) {
+						const val = file["cache-control"];
+						if (
+							typeof val === "number" ||
+							/^\s*\d+\s*$/.test(val)
+						) {
+							// If it's numeric (number or numeric string) treat it as max-age.
+							cacheControl = `public, max-age=${String(
+								val
+							).trim()};`;
+						} else {
+							// use the value verbatim (allow full Cache-Control strings like "no-cache" or "public, max-age=600")
+							cacheControl = val;
+						}
+					} else {
+						cacheControl =
+							organization["cache-control"] ||
+							"public, max-age=3600";
+					}
+
+					// Always override/set Cache-Control header so the response aligns with the file metadata/defaults
+					headers["Cache-Control"] = cacheControl;
+
 					if (src instanceof Uint8Array) {
 						src = Buffer.from(src);
 					} else if (Buffer.isBuffer(src)) {
-						console.log("buffer");
-						return;
+						// Buffer is fine to send — don't bail out here (previous code returned early)
+						// keep src as-is
 					} else if (typeof src === "object") {
 						src = JSON.stringify(src);
 					}
