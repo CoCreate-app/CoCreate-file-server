@@ -88,17 +88,14 @@ class CoCreateFileSystem {
 
 			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
 			const langMatch = pathname.match(bcp47Regex);
-			let lang, langRegion, basePathname, langPathname;
+			let lang, langRegion;
 			if (langMatch) {
 				langRegion = langMatch[1];
 				lang = langRegion.split("-")[0]; // Get just the base language (e.g., 'en', 'es', 'fr')
-				basePathname = pathname.replace(langRegion, "");
-				langPathname = pathname.replace(langRegion, lang);
-
+				let basePathname = pathname.replace(langRegion, "");
 				data.$filter.query.pathname = {
-					$in: [pathname, langPathname, basePathname]
+					$in: [basePathname]
 				};
-				data.$filter.limit = 3; // Increase limit to get all possible matches
 			} else {
 				data.$filter.query.pathname = pathname;
 			}
@@ -146,16 +143,7 @@ class CoCreateFileSystem {
 				});
 			}
 
-			if (langMatch && file.object.length > 1) {
-				// Prioritize exact match with full lang-region
-				file =
-					file.object.find((f) => f.pathname === pathname) ||
-					file.object.find((f) => f.pathname === langPathname) ||
-					file.object.find((f) => f.pathname === basePathname) ||
-					file.object[0];
-			} else {
-				file = file.object[0];
-			}
+			file = file.object[0];
 			if (!file["public"] || file["public"] === "false") {
 				let pageForbidden = await getDefaultFile("/403.html");
 				return sendResponse(pageForbidden.object[0].src, 403, {
@@ -210,7 +198,7 @@ class CoCreateFileSystem {
 					file.urlObject = urlObject;
 
 					if (langRegion) {
-						if (file.languages) {
+						if (!file.languages) {
 							file.languages = organization.languages || [
 								langRegion
 							];
