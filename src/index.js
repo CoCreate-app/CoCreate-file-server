@@ -87,13 +87,18 @@ class CoCreateFileSystem {
 			}
 
 			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
-			const match = pathname.match(bcp47Regex);
-			let lang, langRegion;
-			if (match) {
-				langRegion = match[1];
+			const langMatch = pathname.match(bcp47Regex);
+			let lang, langRegion, basePathname, langPathname;
+			if (langMatch) {
+				langRegion = langMatch[1];
 				lang = langRegion.split("-")[0]; // Get just the base language (e.g., 'en', 'es', 'fr')
-				let newPathname = pathname.replace(langRegion, lang);
-				data.$filter.query.pathname = { $in: [newPathname, pathname] };
+				basePathname = pathname.replace(langRegion, "");
+				langPathname = pathname.replace(langRegion, lang);
+
+				data.$filter.query.pathname = {
+					$in: [pathname, langPathname, basePathname]
+				};
+				data.$filter.limit = 3; // Increase limit to get all possible matches
 			} else {
 				data.$filter.query.pathname = pathname;
 			}
@@ -141,7 +146,16 @@ class CoCreateFileSystem {
 				});
 			}
 
-			file = file.object[0];
+			if (langMatch && file.object.length > 1) {
+				// Prioritize exact match with full lang-region
+				file =
+					file.object.find((f) => f.pathname === pathname) ||
+					file.object.find((f) => f.pathname === langPathname) ||
+					file.object.find((f) => f.pathname === basePathname) ||
+					file.object[0];
+			} else {
+				file = file.object[0];
+			}
 			if (!file["public"] || file["public"] === "false") {
 				let pageForbidden = await getDefaultFile("/403.html");
 				return sendResponse(pageForbidden.object[0].src, 403, {
@@ -194,12 +208,17 @@ class CoCreateFileSystem {
 			} else if (contentType === "text/html") {
 				try {
 					file.urlObject = urlObject;
+
 					if (langRegion) {
+						if (file.languages) {
+							file.languages = organization.languages || [
+								langRegion
+							];
+						}
 						file.langRegion = langRegion;
-					}
-					if (lang) {
 						file.lang = lang;
-					}	
+					}
+
 					src = await this.render.HTML(file);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
