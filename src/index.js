@@ -92,7 +92,7 @@ class CoCreateFileSystem {
 			if (langMatch) {
 				langRegion = langMatch[1];
 				lang = langRegion.split("-")[0]; // Get just the base language (e.g., 'en', 'es', 'fr')
-				let basePathname = pathname.replace(langRegion, "");
+				let basePathname = pathname.replace("/" + langRegion, "");
 				data.$filter.query.pathname = basePathname;
 			} else {
 				data.$filter.query.pathname = pathname;
