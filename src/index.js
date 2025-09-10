@@ -210,19 +210,15 @@ class CoCreateFileSystem {
 				src = Buffer.from(src, "base64");
 			} else if (contentType === "text/html") {
 				try {
-					file.urlObject = urlObject;
+					let data = {};
 
-					if (lang) {
-						if (!file.languages) {
-							file.languages = organization.languages || [
-								langRegion
-							];
-						}
-						file.langRegion = langRegion;
-						file.lang = lang;
-					}
-
-					src = await this.render.HTML(file);
+					src = await this.render.HTML(
+						file,
+						organization,
+						urlObject,
+						langRegion,
+						lang
+					);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
 				}
