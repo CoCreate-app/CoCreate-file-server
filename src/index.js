@@ -86,7 +86,8 @@ class CoCreateFileSystem {
 				if (!directory.includes(".")) pathname += "/index.html";
 			}
 
-			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})+)\//;
+			// Match both /en/ and /en-US/ style URLs
+			const bcp47Regex = /^\/([a-zA-Z]{2,3}(?:-[a-zA-Z0-9]{2,8})?)\//;
 			const langMatch = pathname.match(bcp47Regex);
 			let lang, langRegion;
 			if (langMatch) {
@@ -95,6 +96,22 @@ class CoCreateFileSystem {
 				let basePathname = pathname.replace("/" + langRegion, "");
 				data.$filter.query.pathname = basePathname;
 			} else {
+				// No language in URL, try Accept-Language header
+				let acceptLang = req.headers && req.headers["accept-language"];
+				if (acceptLang) {
+					// Parse the Accept-Language header, get the first language
+					let preferred = acceptLang.split(",")[0].trim();
+					if (preferred) {
+						lang = preferred.split("-")[0];
+						langRegion = preferred;
+						// --- BEGIN OPTIONAL REDIRECT ---
+						// Uncomment to enable automatic redirect to language-specific path
+						// let newPath = `/${preferred}${pathname.startsWith('/') ? '' : '/'}${pathname.replace(/^\//, '')}`;
+						// res.writeHead(302, { Location: newPath });
+						// return res.end();
+						// --- END OPTIONAL REDIRECT ---
+					}
+				}
 				data.$filter.query.pathname = pathname;
 			}
 
@@ -195,7 +212,7 @@ class CoCreateFileSystem {
 				try {
 					file.urlObject = urlObject;
 
-					if (langRegion) {
+					if (lang) {
 						if (!file.languages) {
 							file.languages = organization.languages || [
 								langRegion
