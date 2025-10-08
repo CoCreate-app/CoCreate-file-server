@@ -199,7 +199,39 @@ class CoCreateFileSystem {
 
 			let contentType = file["content-type"] || "text/html";
 
-			if (
+			// Add handling for font files
+			if (contentType.startsWith("font/") || /\.(woff2?|ttf|otf)$/i.test(pathname)) {
+				try {
+					if (typeof src === "string") {
+						if (/^([A-Za-z0-9+/]+={0,2})$/.test(src)) {
+							// Decode base64-encoded font data
+							src = Buffer.from(src, "base64");
+						} else {
+							throw new Error("Font data is not valid base64");
+						}
+					} else if (typeof src === "object" && src.src) {
+						// Handle case where src is an object containing base64 data
+						if (/^([A-Za-z0-9+/]+={0,2})$/.test(src.src)) {
+							src = Buffer.from(src.src, "base64");
+						} else {
+							throw new Error("Font data inside object is not valid base64");
+						}
+					} else {
+						throw new Error("Font data is not a valid base64 string or object");
+					}
+				} catch (err) {
+					console.error("Error processing font file:", {
+						message: err.message,
+						contentType,
+						srcType: typeof src,
+						srcPreview: typeof src === "string" ? src.slice(0, 50) : null
+					});
+					let pageNotFound = await getDefaultFile("/404.html");
+					return sendResponse(pageNotFound.object[0].src, 404, {
+						"Content-Type": "text/html"
+					});
+				}
+			} else if (
 				/^data:image\/[a-zA-Z0-9+.-]+;base64,([A-Za-z0-9+/]+={0,2})$/.test(
 					src
 				)
@@ -244,10 +276,7 @@ class CoCreateFileSystem {
 						file["cache-control"] !== null
 					) {
 						const val = file["cache-control"];
-						if (
-							typeof val === "number" ||
-							/^\s*\d+\s*$/.test(val)
-						) {
+						if (typeof val === "number" || /^\s*\d+\s*$/.test(val)) {
 							// If it's numeric (number or numeric string) treat it as max-age.
 							cacheControl = `public, max-age=${String(
 								val
@@ -257,19 +286,14 @@ class CoCreateFileSystem {
 							cacheControl = val;
 						}
 					} else {
-						cacheControl =
-							organization["cache-control"] ||
-							"public, max-age=3600";
+						cacheControl = organization["cache-control"] || "public, max-age=3600";
 					}
 
 					// Always override/set Cache-Control header so the response aligns with the file metadata/defaults
 					headers["Cache-Control"] = cacheControl;
 
-					if (src instanceof Uint8Array) {
-						src = Buffer.from(src);
-					} else if (Buffer.isBuffer(src)) {
-						// Buffer is fine to send — don't bail out here (previous code returned early)
-						// keep src as-is
+					if (src instanceof Uint8Array || Buffer.isBuffer(src)) {
+						// Ensure binary data is sent as-is
 					} else if (typeof src === "object") {
 						src = JSON.stringify(src);
 					}
