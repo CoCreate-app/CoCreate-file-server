@@ -1,3 +1,16 @@
+## [1.18.6](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.5...v1.18.6) (2025-10-08)
+
+
+### Bug Fixes
+
+* add handling for font files and improve error processing in CoCreateFileSystem ([de3c618](https://github.com/CoCreate-app/CoCreate-file-server/commit/de3c6186eebef00bfb6c237dc6d5c7435773ba41))
+* correct pathname handling by ensuring language region is prefixed with a slash ([680832b](https://github.com/CoCreate-app/CoCreate-file-server/commit/680832b7cf710f48afd28a2fe2b425c7eb41d4b1))
+* enhance language detection in pathname processing and support Accept-Language header ([cccc35d](https://github.com/CoCreate-app/CoCreate-file-server/commit/cccc35dc68107a5f39fbf2af053181825eb252fa))
+* enhance language handling in pathname processing and improve file retrieval logic ([b499141](https://github.com/CoCreate-app/CoCreate-file-server/commit/b499141fe599e095a3d0a051ccede4b6131d3fa7))
+* simplify pathname query handling in CoCreateFileSystem ([1632670](https://github.com/CoCreate-app/CoCreate-file-server/commit/1632670b17b7c76775094b2726178248e4e903d6))
+* streamline HTML rendering logic by removing unnecessary language handling ([924041b](https://github.com/CoCreate-app/CoCreate-file-server/commit/924041bc4fba30fbeef5bcd85b6fe42f811af695))
+* streamline language handling in pathname processing and simplify file retrieval logic ([fd43225](https://github.com/CoCreate-app/CoCreate-file-server/commit/fd432258880c33ba9f417d7a0d40eba8a9997863))
+
 ## [1.18.5](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.4...v1.18.5) (2025-09-02)
 
 
