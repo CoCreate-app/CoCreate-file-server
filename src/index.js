@@ -199,7 +199,32 @@ class CoCreateFileSystem {
 
 			let contentType = file["content-type"] || "text/html";
 
-			// Add handling for font files
+			try {
+				if (typeof src === "string") {
+					// Decode the file content based on its MIME type
+					if (/^(image|audio|video|font|application\/octet-stream|application\/x-font-ttf|application\/x-font-woff|application\/x-font-woff2|application\/x-font-opentype|application\/x-font-truetype|application\/x-font-eot)/.test(contentType)) {
+						src = Buffer.from(src, "base64");
+					} else if (/^(application\/zip|application\/x-7z-compressed|application\/x-rar-compressed|application\/pdf)/.test(contentType)) {
+						src = Buffer.from(src, "binary");
+					} else {
+						src = Buffer.from(src, "utf8");
+					}
+				} else {
+					throw new Error("File content is not in a valid format");
+				}
+			} catch (err) {
+				console.error("Error decoding file content:", {
+					message: err.message,
+					contentType,
+					srcType: typeof src
+				});
+				let pageNotFound = await getDefaultFile("/404.html");
+				return sendResponse(pageNotFound.object[0].src, 404, {
+					"Content-Type": "text/html"
+				});
+			}
+
+			// Remove redundant handling for `src.src` in font file processing
 			if (contentType.startsWith("font/") || /\.(woff2?|ttf|otf)$/i.test(pathname)) {
 				try {
 					if (typeof src === "string") {
@@ -209,22 +234,14 @@ class CoCreateFileSystem {
 						} else {
 							throw new Error("Font data is not valid base64");
 						}
-					} else if (typeof src === "object" && src.src) {
-						// Handle case where src is an object containing base64 data
-						if (/^([A-Za-z0-9+/]+={0,2})$/.test(src.src)) {
-							src = Buffer.from(src.src, "base64");
-						} else {
-							throw new Error("Font data inside object is not valid base64");
-						}
 					} else {
-						throw new Error("Font data is not a valid base64 string or object");
+						throw new Error("Font data is not a valid base64 string");
 					}
 				} catch (err) {
 					console.error("Error processing font file:", {
 						message: err.message,
 						contentType,
-						srcType: typeof src,
-						srcPreview: typeof src === "string" ? src.slice(0, 50) : null
+						srcType: typeof src
 					});
 					let pageNotFound = await getDefaultFile("/404.html");
 					return sendResponse(pageNotFound.object[0].src, 404, {
@@ -260,6 +277,9 @@ class CoCreateFileSystem {
 			) {
 				const protocol = "https://"; // || req.headers['x-forwarded-proto'] || req.protocol;
 				src = src.replaceAll("{{$host}}", `${protocol}${hostname}`);
+			} else {
+				// Log unknown file types
+				console.warn(`Unknown content type: ${contentType}`);
 			}
 
 			sendResponse(src, 200, { "Content-Type": contentType });
