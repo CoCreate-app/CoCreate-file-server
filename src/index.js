@@ -199,35 +199,13 @@ class CoCreateFileSystem {
 
 			let contentType = file["content-type"] || "text/html";
 
-			try {
-				if (typeof src === "string") {
-					// Decode the file content based on its MIME type
-					if (/^(image|audio|video|font|application\/octet-stream|application\/x-font-ttf|application\/x-font-woff|application\/x-font-woff2|application\/x-font-opentype|application\/x-font-truetype|application\/x-font-eot)/.test(contentType)) {
-						src = Buffer.from(src, "base64");
-					} else if (/^(application\/zip|application\/x-7z-compressed|application\/x-rar-compressed|application\/pdf)/.test(contentType)) {
-						src = Buffer.from(src, "binary");
-					} else {
-						src = Buffer.from(src, "utf8");
-					}
-				} else {
-					throw new Error("File content is not in a valid format");
-				}
-			} catch (err) {
-				console.error("Error decoding file content:", {
-					message: err.message,
-					contentType,
-					srcType: typeof src
-				});
-				let pageNotFound = await getDefaultFile("/404.html");
-				return sendResponse(pageNotFound.object[0].src, 404, {
-					"Content-Type": "text/html"
-				});
-			}
-
 			// Remove redundant handling for `src.src` in font file processing
 			if (contentType.startsWith("font/") || /\.(woff2?|ttf|otf)$/i.test(pathname)) {
 				try {
 					if (typeof src === "string") {
+						if (src.startsWith("data:font/")) {
+							src = src.substring(src.indexOf(",") + 1);
+						}
 						if (/^([A-Za-z0-9+/]+={0,2})$/.test(src)) {
 							// Decode base64-encoded font data
 							src = Buffer.from(src, "base64");
@@ -275,10 +253,10 @@ class CoCreateFileSystem {
 				contentType === "text/xml" ||
 				contentType === "application/xml"
 			) {
-				const protocol = "https://"; // || req.headers['x-forwarded-proto'] || req.protocol;
+				const protocol = "https://";
 				src = src.replaceAll("{{$host}}", `${protocol}${hostname}`);
-			} else {
-				// Log unknown file types
+			} else if (contentType !== "text/javascript" || contentType === "text/css") {
+			
 				console.warn(`Unknown content type: ${contentType}`);
 			}
 
