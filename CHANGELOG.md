@@ -1,3 +1,10 @@
+## [1.18.8](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.7...v1.18.8) (2025-10-11)
+
+
+### Bug Fixes
+
+* improve file content decoding and enhance font handling logic ([8bddb02](https://github.com/CoCreate-app/CoCreate-file-server/commit/8bddb0249c9748a90ac1442073ba464a053d9074))
+
 ## [1.18.7](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.6...v1.18.7) (2025-10-08)
 
 
