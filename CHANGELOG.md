@@ -1,3 +1,10 @@
+## [1.18.9](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.8...v1.18.9) (2025-10-11)
+
+
+### Bug Fixes
+
+* add theme detection and handling for preferred color scheme in responses ([484a37c](https://github.com/CoCreate-app/CoCreate-file-server/commit/484a37c3f35b397a3baff0d9dc62c338a0135903))
+
 ## [1.18.8](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.7...v1.18.8) (2025-10-11)
 
 
