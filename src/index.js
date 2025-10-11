@@ -30,6 +30,24 @@ class CoCreateFileSystem {
 		try {
 			const hostname = urlObject.hostname;
 
+			// --- determine preferred color scheme from browser headers ---
+			let theme;
+			const headerValue =
+				(req && req.headers && (
+					req.headers["sec-ch-prefers-color-scheme"] ||
+					req.headers["prefers-color-scheme"] ||
+					req.headers["x-prefers-color-scheme"] ||
+					req.headers["x-color-scheme"]
+				));
+			if (typeof headerValue === "string") {
+				// take first token, strip quotes, normalize
+				const token = headerValue.split(",")[0].trim().replace(/^"|"$/g, "").toLowerCase();
+				if (token === "dark" || token === "light") theme = token;
+			}
+			// optional: expose detected theme to clients / downstream code
+			if (theme) res.setHeader("X-Preferred-Color-Scheme", theme);
+			// --- end theme detection ---
+
 			let data = {
 				method: "object.read",
 				host: hostname,
@@ -239,12 +257,14 @@ class CoCreateFileSystem {
 				try {
 					let data = {};
 
+					// pass detected theme (may be undefined) into server-side renderer
 					src = await this.render.HTML(
 						file,
 						organization,
 						urlObject,
 						langRegion,
-						lang
+						lang,
+						theme
 					);
 				} catch (err) {
 					console.warn("server-side-render: " + err.message);
@@ -289,6 +309,16 @@ class CoCreateFileSystem {
 
 					// Always override/set Cache-Control header so the response aligns with the file metadata/defaults
 					headers["Cache-Control"] = cacheControl;
+					// Advertise that we accept the Sec-CH-Prefers-Color-Scheme client hint.
+					// After the browser sees this in a response it may include
+					// the Sec-CH-Prefers-Color-Scheme header on subsequent requests.
+					headers["Accept-CH"] = "Sec-CH-Prefers-Color-Scheme";
+					// optional: tell browser how long to remember this preference (seconds)
+					headers["Accept-CH-Lifetime"] = "86400";
+					// ensure caches/proxies vary responses by this hint
+					headers["Vary"] = headers["Vary"]
+						? headers["Vary"] + ", Sec-CH-Prefers-Color-Scheme"
+						: "Sec-CH-Prefers-Color-Scheme";
 
 					if (src instanceof Uint8Array || Buffer.isBuffer(src)) {
 						// Ensure binary data is sent as-is
