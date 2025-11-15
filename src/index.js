@@ -217,48 +217,74 @@ class CoCreateFileSystem {
 
 			let contentType = file["content-type"] || "text/html";
 
-			// Remove redundant handling for `src.src` in font file processing
-			if (contentType.startsWith("font/") || /\.(woff2?|ttf|otf)$/i.test(pathname)) {
-				try {
-					if (typeof src === "string") {
-						if (src.startsWith("data:font/")) {
-							src = src.substring(src.indexOf(",") + 1);
-						}
-						if (/^([A-Za-z0-9+/]+={0,2})$/.test(src)) {
-							// Decode base64-encoded font data
-							src = Buffer.from(src, "base64");
-						} else {
-							throw new Error("Font data is not valid base64");
-						}
-					} else {
-						throw new Error("Font data is not a valid base64 string");
-					}
-				} catch (err) {
-					console.error("Error processing font file:", {
-						message: err.message,
-						contentType,
-						srcType: typeof src
-					});
-					let pageNotFound = await getDefaultFile("/404.html");
-					return sendResponse(pageNotFound.object[0].src, 404, {
-						"Content-Type": "text/html"
-					});
-				}
-			} else if (
-				/^data:image\/[a-zA-Z0-9+.-]+;base64,([A-Za-z0-9+/]+={0,2})$/.test(
-					src
-				)
-			) {
-				src = src.replace(/^data:image\/(png|jpeg|jpg);base64,/, "");
-				src = Buffer.from(src, "base64");
-			} else if (/^([A-Za-z0-9+/]+={0,2})$/.test(src)) {
-				src = Buffer.from(src, "base64");
-			} else if (contentType === "text/html") {
-				try {
-					let data = {};
+			// Normalize and decode src based on content-type and pathname.
+			async function normalizeSrc(src, contentType, pathname) {
+				const isBase64Only = (s) =>
+					typeof s === "string" && /^[A-Za-z0-9+/]+={0,2}$/.test(s) && s.length % 4 === 0;
 
-					// pass detected theme (may be undefined) into server-side renderer
-					src = await this.render.HTML(
+				const parseDataUri = (s) => {
+					// returns { mime, isBase64, data } or null
+					const m = /^data:([^;]+)(;base64)?,(.*)$/is.exec(s);
+					if (!m) return null;
+					return { mime: m[1].toLowerCase(), isBase64: !!m[2], data: m[3] };
+				};
+
+				// Fonts: data:font/...;base64 or plain base64 -> Buffer
+				if (contentType.startsWith("font/") || /\.(woff2?|ttf|otf)$/i.test(pathname)) {
+					if (Buffer.isBuffer(src)) return src;
+					if (typeof src !== "string") throw new Error("Invalid font src");
+					const d = parseDataUri(src);
+					if (d && d.isBase64) return Buffer.from(d.data, "base64");
+					// maybe stored as bare base64
+					if (isBase64Only(src)) return Buffer.from(src, "base64");
+					throw new Error("Font data is not valid base64 or data URI");
+				}
+
+				// Data URIs
+				if (typeof src === "string") {
+					const d = parseDataUri(src);
+					if (d) {
+						// SVG: decode to utf8 string so browsers render SVG correctly
+						if (d.mime === "image/svg+xml") {
+							if (d.isBase64) return Buffer.from(d.data, "base64").toString("utf8");
+							// URI-encoded SVG payload
+							try {
+								return decodeURIComponent(d.data);
+							} catch (_) {
+								return d.data;
+							}
+						}
+						// Raster images -> Buffer
+						if (/^image\/(png|jpe?g|webp|bmp|gif)$/i.test(d.mime)) {
+							if (d.isBase64) return Buffer.from(d.data, "base64");
+						}
+						// If it's a text data URI (e.g., xml) and not base64, return decoded text
+						if (!d.isBase64) {
+							try {
+								return decodeURIComponent(d.data);
+							} catch (_) {
+								return d.data;
+							}
+						}
+					}
+				}
+
+				// Plain base64-only string: decode to Buffer only for binary content types
+				if (isBase64Only(src)) {
+					if (
+						contentType.startsWith("image/") ||
+						contentType.startsWith("font/") ||
+						contentType === "application/octet-stream"
+					) {
+						return Buffer.from(src, "base64");
+					}
+					// textual content kept as-is
+					return src;
+				}
+
+				// HTML rendering
+				if (contentType === "text/html") {
+					return await this.render.HTML(
 						file,
 						organization,
 						urlObject,
@@ -266,20 +292,28 @@ class CoCreateFileSystem {
 						lang,
 						theme
 					);
-				} catch (err) {
-					console.warn("server-side-render: " + err.message);
 				}
-			} else if (
-				contentType === "text/xml" ||
-				contentType === "application/xml"
-			) {
-				const protocol = "https://";
-				src = src.replaceAll("{{$host}}", `${protocol}${hostname}`);
-			} else if (contentType !== "text/javascript" || contentType === "text/css") {
-			
-				console.warn(`Unknown content type: ${contentType}`);
+
+				// XML host replacement if src is string
+				if ((contentType === "text/xml" || contentType === "application/xml") && typeof src === "string") {
+					const protocol = "https://";
+					return src.replaceAll("{{$host}}", `${protocol}${hostname}`);
+				}
+
+				// Otherwise return as-is (string, Buffer, object)
+				return src;
 			}
 
+			try {
+				src = await normalizeSrc.call(this, src, contentType, pathname);
+			} catch (err) {
+				console.error("Error processing file src:", err && err.message);
+				let pageNotFound = await getDefaultFile("/404.html");
+				return sendResponse(pageNotFound.object[0].src, 404, {
+					"Content-Type": "text/html"
+				});
+			}
+			
 			sendResponse(src, 200, { "Content-Type": contentType });
 			this.sitemap.check(file, hostname);
 
