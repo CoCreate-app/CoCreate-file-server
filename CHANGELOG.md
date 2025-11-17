@@ -1,3 +1,10 @@
+## [1.18.10](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.9...v1.18.10) (2025-11-17)
+
+
+### Bug Fixes
+
+* enhance font and data URI handling in file processing ([25b7e8c](https://github.com/CoCreate-app/CoCreate-file-server/commit/25b7e8c1976c12ea99f1806025c248e0fa865ef0))
+
 ## [1.18.9](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.8...v1.18.9) (2025-10-11)
 
 
