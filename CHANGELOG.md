@@ -1,3 +1,10 @@
+# [1.19.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.10...v1.19.0) (2026-04-08)
+
+
+### Features
+
+* support ico images ([cd9720d](https://github.com/CoCreate-app/CoCreate-file-server/commit/cd9720df7c534728a5732ea4bd44e9ce85ed7a74))
+
 ## [1.18.10](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.9...v1.18.10) (2025-11-17)
 
 
