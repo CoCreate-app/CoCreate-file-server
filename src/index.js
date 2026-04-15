@@ -254,9 +254,9 @@ class CoCreateFileSystem {
                                 return d.data;
                             }
                         }
-                        // Raster images and Icons -> Buffer
+                        // Raster images, Icons, Video, and Audio -> Buffer
                         // Added x-icon, vnd.microsoft.icon, and ico to process icon files properly
-                        if (/^image\/(png|jpe?g|webp|bmp|gif|x-icon|vnd\.microsoft\.icon|ico)$/i.test(d.mime)) {
+                        if (/^(image\/(png|jpe?g|webp|bmp|gif|x-icon|vnd\.microsoft\.icon|ico)|video\/.*|audio\/.*)$/i.test(d.mime)) {
                             if (d.isBase64) return Buffer.from(d.data, "base64");
                         }
                         // If it's a text data URI (e.g., xml) and not base64, return decoded text
@@ -275,6 +275,8 @@ class CoCreateFileSystem {
                     if (
                         contentType.startsWith("image/") ||
                         contentType.startsWith("font/") ||
+                        contentType.startsWith("video/") ||
+                        contentType.startsWith("audio/") ||
                         contentType === "application/octet-stream"
                     ) {
                         return Buffer.from(src, "base64");
