@@ -1,3 +1,10 @@
+## [1.19.1](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.19.0...v1.19.1) (2026-04-15)
+
+
+### Bug Fixes
+
+* video and audio handling ([e7b67c6](https://github.com/CoCreate-app/CoCreate-file-server/commit/e7b67c66930d309b1deeefda5720134106de2b91))
+
 # [1.19.0](https://github.com/CoCreate-app/CoCreate-file-server/compare/v1.18.10...v1.19.0) (2026-04-08)
 
 
