@@ -13,6 +13,7 @@
  *
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <https://www.gnu.org/licenses/>.
+ *
  ********************************************************************************/
 
 // Commercial Licensing Information:
@@ -97,11 +98,20 @@ class CoCreateFileSystem {
 
             let pathname = urlObject.pathname;
 
+            // --- Trailing slash enforcement for directory paths ---
+            // If the requested path is a directory (does not end with '/' and does not contain a '.' in the final segment),
+            // we send a 301 Permanent Redirect to the same path ending with a '/' to ensure relative assets resolve correctly.
+            if (!pathname.endsWith("/") && !pathname.startsWith("/.well-known/acme-challenge")) {
+                let lastSegment = pathname.split("/").slice(-1)[0];
+                if (!lastSegment.includes(".")) {
+                    const search = urlObject.search || "";
+                    res.writeHead(301, { Location: pathname + "/" + search });
+                    return res.end();
+                }
+            }
+
             if (pathname.endsWith("/")) {
                 pathname += "index.html";
-            } else if (!pathname.startsWith("/.well-known/acme-challenge")) {
-                let directory = pathname.split("/").slice(-1)[0];
-                if (!directory.includes(".")) pathname += "/index.html";
             }
 
             // Match both /en/ and /en-US/ style URLs
