@@ -179,7 +179,13 @@ class CoCreateFileSystem {
                 file = await crud.send(data);
             }
 
+            // If file is completely missing, redirect to the root-level /404.html
             if (!file || !file.object || !file.object[0]) {
+                if (pathname !== "/404.html") {
+                    const search = urlObject.search || "";
+                    res.writeHead(301, { Location: "/404.html" + search });
+                    return res.end();
+                }
                 let pageNotFound = await getDefaultFile("/404.html");
                 return sendResponse(pageNotFound.object[0].src, 404, {
                     "Content-Type": "text/html"
@@ -187,7 +193,13 @@ class CoCreateFileSystem {
             }
 
             file = file.object[0];
+            // If the file is not public, redirect to the root-level /403.html
             if (!file["public"] || file["public"] === "false") {
+                if (pathname !== "/403.html") {
+                    const search = urlObject.search || "";
+                    res.writeHead(301, { Location: "/403.html" + search });
+                    return res.end();
+                }
                 let pageForbidden = await getDefaultFile("/403.html");
                 return sendResponse(pageForbidden.object[0].src, 403, {
                     "Content-Type": "text/html"
@@ -210,7 +222,13 @@ class CoCreateFileSystem {
                 src = fileSrc[file["name"]];
             }
 
+            // If src is missing, redirect to the root-level /404.html
             if (!src) {
+                if (pathname !== "/404.html") {
+                    const search = urlObject.search || "";
+                    res.writeHead(301, { Location: "/404.html" + search });
+                    return res.end();
+                }
                 let pageNotFound = await getDefaultFile("/404.html");
                 return sendResponse(pageNotFound.object[0].src, 404, {
                     "Content-Type": "text/html"
@@ -321,6 +339,11 @@ class CoCreateFileSystem {
                 src = await normalizeSrc.call(this, src, contentType, pathname);
             } catch (err) {
                 console.error("Error processing file src:", err && err.message);
+                if (pathname !== "/404.html") {
+                    const search = urlObject.search || "";
+                    res.writeHead(301, { Location: "/404.html" + search });
+                    return res.end();
+                }
                 let pageNotFound = await getDefaultFile("/404.html");
                 return sendResponse(pageNotFound.object[0].src, 404, {
                     "Content-Type": "text/html"
