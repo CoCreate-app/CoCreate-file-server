@@ -31,15 +31,7 @@ class CoCreateFileSystem {
         try {
             const hostname = urlObject.hostname;
             let pathname = urlObject.pathname;
-
-            // --- determine if the request is expected to yield HTML ---
-            // A request is classified as HTML if:
-            // 1. It explicitly targets a .html file
-            // 2. It ends with a slash (/)
-            // 3. The last segment doesn't contain a dot (.) (i.e. directory paths or clean routes)
-            const isHtmlRequest = pathname.endsWith(".html") || 
-                                  pathname.endsWith("/") || 
-                                  !pathname.split("/").slice(-1)[0].includes(".");
+            let statusCode = 200; // Default status code
 
             // --- determine preferred color scheme from browser headers ---
             let theme;
@@ -73,15 +65,10 @@ class CoCreateFileSystem {
 
             let organization_id;
             if (!organization || organization.error) {
-                if (isHtmlRequest) {
-                    let hostNotFound = await getDefaultFile("/hostNotFound.html");
-                    return sendResponse(hostNotFound.object[0].src, 404, {
-                        "Content-Type": "text/html"
-                    });
-                } else {
-                    res.writeHead(404, { "Content-Type": "text/plain" });
-                    return res.end("Host Not Found");
-                }
+                let hostNotFound = await getDefaultFile("/hostNotFound.html");
+                return sendResponse(hostNotFound.object[0].src, 404, {
+                    "Content-Type": hostNotFound.object[0]["content-type"] || "text/html"
+                });
             }
 
             organization_id = organization._id;
@@ -98,20 +85,12 @@ class CoCreateFileSystem {
 
             let active = crud.wsManager.organizations.get(organization_id);
             if (active === false) {
-                if (isHtmlRequest) {
-                    let balanceFalse = await getDefaultFile("/balanceFalse.html");
-                    return sendResponse(balanceFalse.object[0].src, 403, {
-                        "Content-Type": "text/html",
-                        "Account-Balance": "false",
-                        storage: organization.storage
-                    });
-                } else {
-                    res.writeHead(403, { 
-                        "Content-Type": "text/plain",
-                        "Account-Balance": "false"
-                    });
-                    return res.end("Account Balance Empty");
-                }
+                let balanceFalse = await getDefaultFile("/balanceFalse.html");
+                return sendResponse(balanceFalse.object[0].src, 403, {
+                    "Content-Type": balanceFalse.object[0]["content-type"] || "text/html",
+                    "Account-Balance": "false",
+                    storage: organization.storage
+                });
             }
 
             let parameters = urlObject.searchParams;
@@ -200,75 +179,48 @@ class CoCreateFileSystem {
                 file = await crud.send(data);
             }
 
-            // If file is completely missing, handle redirects cleanly or send text 404
+            // If file is completely missing, fetch default 404 file and set status
             if (!file || !file.object || !file.object[0]) {
-                if (isHtmlRequest) {
-                    if (pathname !== "/404.html") {
-                        const search = urlObject.search || "";
-                        res.writeHead(301, { Location: "/404.html" + search });
-                        return res.end();
-                    }
-                    let pageNotFound = await getDefaultFile("/404.html");
-                    return sendResponse(pageNotFound.object[0].src, 404, {
-                        "Content-Type": "text/html"
-                    });
-                } else {
-                    res.writeHead(404, { "Content-Type": "text/plain" });
-                    return res.end("Not Found");
-                }
+                statusCode = 404;
+                let pageNotFound = await getDefaultFile("/404.html");
+                file = pageNotFound.object[0];
+            } else {
+                file = file.object[0];
             }
 
-            file = file.object[0];
-            // If the file is not public, handle redirects cleanly or send text 403
+            // If the file is not public, fetch default 403 file and set status
             if (!file["public"] || file["public"] === "false") {
-                if (isHtmlRequest) {
-                    if (pathname !== "/403.html") {
-                        const search = urlObject.search || "";
-                        res.writeHead(301, { Location: "/403.html" + search });
-                        return res.end();
-                    }
-                    let pageForbidden = await getDefaultFile("/403.html");
-                    return sendResponse(pageForbidden.object[0].src, 403, {
-                        "Content-Type": "text/html"
-                    });
-                } else {
-                    res.writeHead(403, { "Content-Type": "text/plain" });
-                    return res.end("Forbidden");
-                }
+                statusCode = 403;
+                let pageForbidden = await getDefaultFile("/403.html");
+                file = pageForbidden.object[0];
             }
 
             let src;
             if (file["src"]) {
                 src = file["src"];
             } else {
-                let fileSrc = await crud.send({
-                    method: "object.read",
-                    host: hostname,
-                    array: file["array"],
-                    object: {
-                        _id: file._id
-                    },
-                    organization_id
-                });
-                src = fileSrc[file["name"]];
+                try {
+                    let fileSrc = await crud.send({
+                        method: "object.read",
+                        host: hostname,
+                        array: file["array"],
+                        object: {
+                            _id: file._id
+                        },
+                        organization_id
+                    });
+                    src = fileSrc[file["name"]];
+                } catch (err) {
+                    console.error("Error fetching file src:", err);
+                }
             }
 
-            // If src is missing, handle redirects cleanly or send text 404
+            // If src is still missing, fallback to 404 file
             if (!src) {
-                if (isHtmlRequest) {
-                    if (pathname !== "/404.html") {
-                        const search = urlObject.search || "";
-                        res.writeHead(301, { Location: "/404.html" + search });
-                        return res.end();
-                    }
-                    let pageNotFound = await getDefaultFile("/404.html");
-                    return sendResponse(pageNotFound.object[0].src, 404, {
-                        "Content-Type": "text/html"
-                    });
-                } else {
-                    res.writeHead(404, { "Content-Type": "text/plain" });
-                    return res.end("Not Found");
-                }
+                statusCode = 404;
+                let pageNotFound = await getDefaultFile("/404.html");
+                file = pageNotFound.object[0];
+                src = file["src"];
             }
 
             let modifiedOn = file.modified || file.created;
@@ -375,32 +327,14 @@ class CoCreateFileSystem {
                 src = await normalizeSrc.call(this, src, contentType, pathname);
             } catch (err) {
                 console.error("Error processing file src:", err && err.message);
-                if (isHtmlRequest) {
-                    if (pathname !== "/404.html") {
-                        const search = urlObject.search || "";
-                        res.writeHead(301, { Location: "/404.html" + search });
-                        return res.end();
-                    }
-                    let pageNotFound = await getDefaultFile("/404.html");
-                    return sendResponse(pageNotFound.object[0].src, 404, {
-                        "Content-Type": "text/html"
-                    });
-                } else {
-                    res.writeHead(500, { "Content-Type": "text/plain" });
-                    return res.end("Internal Server Error");
-                }
+                statusCode = 500;
+                let errorPage = await getDefaultFile("/404.html");
+                file = errorPage.object[0];
+                src = file.src;
+                contentType = file["content-type"] || "text/html";
             }
             
-            // --- Determine correct HTTP status code ---
-            // Even though we fetched custom files like /404.html or /403.html successfully (200 OK from database context), 
-            // the HTTP delivery to the client must transmit the correct structural HTTP error status code.
-            let statusCode = 200;
-            if (pathname === "/404.html") {
-                statusCode = 404;
-            } else if (pathname === "/403.html") {
-                statusCode = 403;
-            }
-
+            // Send the response with our calculated status code
             sendResponse(src, statusCode, { "Content-Type": contentType });
             this.sitemap.check(file, hostname);
 
